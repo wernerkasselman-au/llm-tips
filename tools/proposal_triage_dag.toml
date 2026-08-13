@@ -50,7 +50,7 @@ tier2_units = []
 tier3_units = []
 
 # ============================================================================
-# LAYER 0 — Intake & ownership gate
+# LAYER 0: Intake & ownership gate
 # ============================================================================
 
 [units.U01]
@@ -135,7 +135,7 @@ failure_modes = [
 rationale = "The synopsis is the single highest-leverage control against volume. Architects should be able to filter on the synopsis alone. Ownership attestation converts the Clay principle into a machine-checkable gate."
 
 # ============================================================================
-# LAYER 1 — Parallel structural + High-Signal quality scans
+# LAYER 1: Parallel structural + High-Signal quality scans
 # ============================================================================
 
 [units.U03]
@@ -304,7 +304,7 @@ failure_modes = [
 rationale = "Directly operationalises Clay principles 3 and 4: respect the reader's time and do not treat longer as better."
 
 # ============================================================================
-# LAYER 2 — Triage
+# LAYER 2: Triage
 # ============================================================================
 
 [units.U07]
@@ -365,7 +365,7 @@ failure_modes = [
 rationale = "This is the unit that converts volume into a manageable judgement load. All prior units exist to make this classification accurate and defensible."
 
 # ============================================================================
-# LAYER 3 — Remediation & enrichment
+# LAYER 3: Remediation & enrichment
 # ============================================================================
 
 [units.U08]
@@ -479,7 +479,7 @@ failure_modes = [
 rationale = "This is the hand-off point. Architects receive a curated, evidence-backed shortlist instead of a firehose."
 
 # ============================================================================
-# LAYER 4 — Validation & sign-off
+# LAYER 4: Validation & sign-off
 # ============================================================================
 
 [units.U11]
