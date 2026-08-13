@@ -1,4 +1,4 @@
-# Anti-AI-Tell Style Guide
+# High-Signal Writing Guide (Full Ruleset)
 
 A definitive, evidence-based reference for writing prose, documentation, articles, and code comments that do not read as LLM-generated.
 

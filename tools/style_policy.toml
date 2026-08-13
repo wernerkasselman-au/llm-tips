@@ -1,4 +1,4 @@
-# Anti-AI-Tell Style Policy (worked example with repo-local paths).
+# High-Signal Style Policy (worked example with repo-local paths).
 # Machine-readable ruleset for detecting and avoiding LLM-generated writing patterns.
 #
 # CANONICAL RELEASE TEMPLATE:
@@ -31,7 +31,7 @@
 #   jpeggdev/humanize-writing ai-tells reference
 
 [meta]
-title = "Anti-AI-Tell Style Policy"
+title = "High-Signal Style Policy"
 template_kind = "contract-declaration"
 release_version = "1.0.0"
 created = "2026-04-18"

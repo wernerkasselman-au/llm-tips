@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Lint prose against an anti-AI-tell style-policy TOML file.
+"""Lint prose against a high-signal style-policy TOML file.
 
 Reads a contract-declaration TOML (e.g., tools/style_policy.toml)
 and applies each scannable contract to a prose document, reporting violations
@@ -74,7 +74,7 @@ class LintReport:
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Lint prose against an anti-AI-tell policy TOML.")
+    parser = argparse.ArgumentParser(description="Lint prose against a high-signal policy TOML.")
     parser.add_argument("files", nargs="+", help="Prose file(s) to lint (markdown, plain text).")
     parser.add_argument(
         "--policy",

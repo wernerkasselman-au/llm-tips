@@ -1,14 +1,14 @@
 # Writing Audit and Fix DAG
-# Coordinates an agent fleet that audits prose against the Anti-AI-Tell Style
+# Coordinates an agent fleet that audits prose against the High-Signal Writing
 # Guide and rewrites or surgically edits offending pieces.
 #
 # RULESET:
 #   tools/style_policy.toml      (machine-readable contract)
 #   style_guide.md            (local rationale, ~12k words)
-#   https://github.com/mr-k-man/llm-tips/blob/main/style_guide.md  (canonical)
+#   https://github.com/wernerkasselman-au/llm-tips/blob/main/style_guide.md  (canonical)
 #
 # DIVERGENCE NOTE:
-#   The mr-k-man/llm-tips canonical guide is a strict superset of the local
+#   The wernerkasselman-au/llm-tips canonical guide is a strict superset of the local
 #   style_guide.md. The canonical adds:
 #     §4.10  Filler-phrase replacements (Berman 2026 Humanizer kit table)
 #     §5.14  Performed authenticity / second-generation tells:
@@ -42,7 +42,7 @@
 # TIER VALUES:   1 = current release
 
 [meta]
-title = "Anti-AI-Tell writing audit and fix workflow"
+title = "High-Signal writing audit and fix workflow"
 spec = "tools/style_policy.toml"
 decomposition = "tools/audit_dag.toml"
 created = "2026-05-06"
@@ -105,7 +105,7 @@ rationale = "Every downstream scan needs a stable, classified set of inputs. Rec
 
 [units.U02]
 name = "rule-set-load"
-summary = "Compile the canonical mr-k-man/llm-tips style_guide.md plus tools/style_policy.toml into an in-memory rule set: Tier-1 vocab, §4.10 filler replacements, opener/closer bans, structural patterns from §5 (including §5.14 second-generation tells), §6.9 false ranges, density thresholds per §13."
+summary = "Compile the canonical wernerkasselman-au/llm-tips style_guide.md plus tools/style_policy.toml into an in-memory rule set: Tier-1 vocab, §4.10 filler replacements, opener/closer bans, structural patterns from §5 (including §5.14 second-generation tells), §6.9 false ranges, density thresholds per §13."
 layer = 0
 tier = 1
 status = "pending"

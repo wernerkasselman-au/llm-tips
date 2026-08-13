@@ -1,4 +1,4 @@
-# Anti-AI-Tell Style Guide
+# High-Signal Writing Guide (Tightened)
 
 Evidence-based reference for prose, docs, articles, and code comments that don't read as LLM-generated.
 

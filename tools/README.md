@@ -1,7 +1,8 @@
-# Anti-AI-Tell tooling
+# High-Signal writing tooling
 
-Machine-checkable companions to [`style_guide.md`](../style_guide.md): a
-ruleset, a linter, and an audit DAG.
+Machine-checkable companions to the
+[High-Signal Writing Guide](../high_signal_writing_guide.md) and
+[`style_guide.md`](../style_guide.md): a ruleset, a linter, and an audit DAG.
 
 ## Files
 
@@ -43,16 +44,16 @@ The DAG (`audit_dag.toml`, unit `U06`) encodes the recommended hit-weighted
 triage from §13 of the style guide:
 
 - Tier-1 vocab, antithesis (`not X, but Y`), balanced-conclusion, §5.14
-  second-generation tells: weight **1.0**
+  second-generation tells: weight `1.0`
 - §4.10 filler phrases, restricted-density violations, §6.9 false ranges:
-  weight **0.5**
-- Voice/format hits: weight **0.25**
+  weight `0.5`
+- Voice/format hits: weight `0.25`
 
 Routing:
 
-- Weighted score `≥ 3` → **rewrite from scratch** (per §12.4 — sentence-level
+- Weighted score `≥ 3` → rewrite from scratch (per §12.4: sentence-level
   edits don't fix structural tells).
-- Weighted score `1–2` → **surgical edit**.
+- Weighted score `1–2` → surgical edit.
 - Weighted score `0` → clean, no action.
 
 ## Scope of automation
@@ -63,14 +64,14 @@ tricolon density, paragraph-uniformity coefficient of variation, copula
 avoidance, terminal-participial decoration, ChatGPT-specific markup leaks,
 inline-bold density, and the explicit antithesis variants from §5.1.
 
-It does **not** automate:
+It doesn't automate:
 
 - "Did the writer take a position?" (§3 P2)
 - "Is at least one observational specific present?" (§9.1)
 - "Does the piece read aloud as something a human would say?" (§13 voice
   audit)
 
-Those still need a human read. The §13 checklist calls these out — they're
+Those still need a human read. The §13 checklist calls these out: they're
 the residue after the linter has done its job.
 
 ## License

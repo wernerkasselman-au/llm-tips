@@ -1,0 +1,638 @@
+# ServiceNow-Scale Proposal Triage DAG
+# =====================================
+# Coordinates intake, structural validation, High-Signal writing quality
+# checks, ownership attestation, and prioritised shortlisting of proposals
+# so that senior architects spend judgement only on the highest-signal work.
+#
+# STYLE GUIDE:
+#   High-Signal Writing Guide (formerly Anti-AI-Tell Style Guide)
+#   style_guide.md + tools/style_policy.toml
+#
+# KEY ADDITIONS vs original writing-audit DAG:
+#   - Mandatory short synopsis (BLUF) for any document ≥ 600 words
+#   - Structural gates drawn from ADR + Design Doc patterns
+#     (Goals/Non-goals, Alternatives considered, Consequences/Impact)
+#   - Explicit ownership attestation (Clay principle 1)
+#   - Reader-time / length justification
+#   - Funnel to prioritised shortlist + evidence pack for architects
+#
+# HARD INVARIANTS (unchanged):
+#   - `blocks` is exact inverse of direct `depends_on`
+#   - each `ART:` id has exactly one producer
+#   - each `consumes` entry matches an existing `produces` entry exactly
+#   - `layer` ordering follows dependency ordering
+#   - `[computed]` values are derived from `units`, never guessed
+#
+# STATUS VALUES: "pending" | "in_progress" | "done" | "blocked" | "deferred"
+# TIER VALUES:   1 = current release
+
+[meta]
+title = "ServiceNow-scale proposal triage and High-Signal writing gate"
+spec = "tools/style_policy.toml"
+decomposition = "proposal_triage_dag.toml"
+created = "2026-08-13"
+total_units = 12
+tier1_units = [
+  "U01",
+  "U02",
+  "U03",
+  "U04",
+  "U05",
+  "U06",
+  "U07",
+  "U08",
+  "U09",
+  "U10",
+  "U11",
+  "U12",
+]
+tier2_units = []
+tier3_units = []
+
+# ============================================================================
+# LAYER 0 — Intake & ownership gate
+# ============================================================================
+
+[units.U01]
+name = "proposal-inventory"
+summary = "Enumerate every incoming proposal (design docs, RFCs, ADRs, 6-pagers, SAD packets, experiments). Classify by type, length (word count / estimated pages), author, and claimed status. Produce a stable inventory that all downstream units consume."
+layer = 0
+tier = 1
+status = "pending"
+depends_on = []
+blocks = [
+  "U02",
+  "U03",
+  "U04",
+  "U05",
+  "U06",
+]
+estimated_loc = 180
+spec_sections = ["intake"]
+spec_anchors = ["rules/inventory"]
+files_create = [
+  "build/triage/inventory.toml",
+  "build/triage/inventory.json",
+]
+files_modify = []
+acceptance = [
+  "Every file or document submitted for triage appears exactly once in inventory.toml with: path, content_type (design_doc|rfc|adr|sad|experiment|other), word_count, estimated_pages, author, claimed_status, received_at.",
+  "Documents ≥ 600 words are flagged needs_synopsis = true.",
+  "Inventory is idempotent: identical input yields identical hash.",
+]
+produces = ["ART:proposal-inventory"]
+consumes = []
+critical_decisions = [
+  "Length threshold of 600 words / ~1 page is the hard trigger for mandatory synopsis. Adjust only via meta change.",
+]
+constraints = [
+  "Do not open or parse document bodies in U01 beyond length and front-matter extraction. Full content parsing belongs to later units.",
+]
+failure_modes = [
+  "Duplicate paths or missing author → abort with non-zero exit; inventory must be complete and unique.",
+]
+rationale = "A clean, classified inventory is the single source of truth for volume. Without it the rest of the DAG cannot reason about scale or apply the correct structural rules."
+
+[units.U02]
+name = "synopsis-and-ownership-gate"
+summary = "For every document flagged needs_synopsis = true, extract or require a short synopsis (≤ 180 words) that contains: (1) problem in 1–2 sentences, (2) proposed action or decision, (3) primary trade-off or system impact, (4) explicit ask. Require an ownership attestation that the author stands behind every claim in both the synopsis and the full document. Reject or escalate any document that lacks a compliant synopsis or attestation."
+layer = 0
+tier = 1
+status = "pending"
+depends_on = ["U01"]
+blocks = [
+  "U03",
+  "U07",
+]
+estimated_loc = 220
+spec_sections = ["synopsis", "ownership"]
+spec_anchors = ["rules/synopsis", "rules/ownership"]
+files_create = [
+  "build/triage/synopsis_set.toml",
+  "build/triage/ownership_attestations.toml",
+]
+files_modify = []
+acceptance = [
+  "Every needs_synopsis = true document has a synopsis ≤ 180 words containing the four required elements, or is marked failed_synopsis with a clear reason.",
+  "Every document (regardless of length) has an ownership attestation record: author name, timestamp, statement that they stand behind every sentence and the synopsis is their own synthesis.",
+  "Synopsis is treated as the primary triage surface; full body is not required for early filtering.",
+]
+produces = [
+  "ART:synopsis-set",
+  "ART:ownership-attestations",
+]
+consumes = ["ART:proposal-inventory"]
+critical_decisions = [
+  "Synopsis failure is a hard gate for shortlisting. Documents without a compliant synopsis cannot reach the architect shortlist without explicit human override.",
+  "Ownership attestation is mandatory even for short documents; it is the operationalisation of Clay principle 1.",
+]
+constraints = [
+  "Do not accept model-generated synopses without author attestation. The attestation is the ownership signal.",
+]
+failure_modes = [
+  "Missing or incomplete synopsis on a long document → classify as failed_synopsis and exclude from automatic shortlist.",
+]
+rationale = "The synopsis is the single highest-leverage control against volume. Architects should be able to filter on the synopsis alone. Ownership attestation converts the Clay principle into a machine-checkable gate."
+
+# ============================================================================
+# LAYER 1 — Parallel structural + High-Signal quality scans
+# ============================================================================
+
+[units.U03]
+name = "structural-section-check"
+summary = "Validate presence and minimum content of high-value sections drawn from ADR and Design Doc patterns: Context, Goals, Non-goals, Alternatives considered (with rejection rationale), Consequences / Impacted systems / Blast radius. Score structural completeness. ADR-lite documents are allowed a tighter subset (Context + Decision + Consequences)."
+layer = 1
+tier = 1
+status = "pending"
+depends_on = [
+  "U01",
+  "U02",
+]
+blocks = ["U07"]
+estimated_loc = 260
+spec_sections = ["structure", "adr", "design-doc"]
+spec_anchors = [
+  "rules/goals-non-goals",
+  "rules/alternatives",
+  "rules/consequences",
+]
+files_create = [
+  "build/triage/structural_findings.json",
+]
+files_modify = []
+acceptance = [
+  "For design_doc / rfc / sad types: Goals, Non-goals, Alternatives considered, and Consequences/Impact sections are present and non-empty, or the document is marked structurally_incomplete.",
+  "For adr type: Context, Decision (active voice), and Consequences are present.",
+  "Alternatives section must contain at least one rejected alternative with a reason; pure 'no alternatives considered' is a failure.",
+  "Findings include per-section completeness score and missing-section list.",
+]
+produces = ["ART:structural-findings"]
+consumes = [
+  "ART:proposal-inventory",
+  "ART:synopsis-set",
+]
+critical_decisions = [
+  "Non-goals and Alternatives are treated as first-class gates. Their absence is a stronger signal of shallow thinking than missing diagrams.",
+]
+constraints = [
+  "Do not invent missing sections. Only report presence, length, and basic content signals.",
+]
+failure_modes = [
+  "Over-aggressive section detection on free-form narrative → use heading + keyword heuristics with low false-positive tolerance.",
+]
+rationale = "These sections are the cheapest proxies for 'the author actually thought'. They come directly from the formats that survive in high-functioning engineering organisations."
+
+[units.U04]
+name = "high-signal-vocabulary-scan"
+summary = "Run the High-Signal Writing Guide Tier-1 vocabulary bans, restricted density rules, and filler-phrase detections against every document body and its synopsis. Emit per-document hit counts and locations."
+layer = 1
+tier = 1
+status = "pending"
+depends_on = [
+  "U01",
+  "U02",
+]
+blocks = ["U07"]
+estimated_loc = 200
+spec_sections = ["§4", "§4.3", "§4.10"]
+spec_anchors = ["rules/vocabulary", "rules/filler"]
+files_create = [
+  "build/triage/findings_vocab.json",
+]
+files_modify = []
+acceptance = [
+  "Every Tier-1 banned term from the High-Signal Guide is scanned with word-boundary matching.",
+  "Filler-phrase table is applied; replacements are suggested where available.",
+  "Synopsis is scanned with the same rules; hits in the synopsis are weighted higher.",
+]
+produces = ["ART:vocab-findings"]
+consumes = [
+  "ART:proposal-inventory",
+  "ART:synopsis-set",
+]
+critical_decisions = [
+  "Synopsis hits are weighted 1.5× body hits because the synopsis is the primary triage surface.",
+]
+constraints = [
+  "Use the same style_policy.toml contracts as the original writing-audit DAG so results remain comparable.",
+]
+failure_modes = [
+  "False positives on legitimate technical terms that happen to match a ban list → maintain an allow-list override mechanism.",
+]
+rationale = "Vocabulary remains the cheapest high-precision signal of unowned or model-default prose."
+
+[units.U05]
+name = "high-signal-structure-voice-scan"
+summary = "Detect High-Signal structural tells (tricolons, false ranges, performed authenticity patterns, antithesis overuse), voice problems, and formatting density issues across body and synopsis."
+layer = 1
+tier = 1
+status = "pending"
+depends_on = [
+  "U01",
+  "U02",
+]
+blocks = ["U07"]
+estimated_loc = 280
+spec_sections = ["§5", "§5.14", "§6", "§7", "§8"]
+spec_anchors = [
+  "rules/structure",
+  "rules/voice",
+  "rules/format",
+]
+files_create = [
+  "build/triage/findings_structure_voice.json",
+]
+files_modify = []
+acceptance = [
+  "Structural, voice, and format findings are emitted with line references and severity.",
+  "Synopsis is included in the scan.",
+  "Density thresholds match the High-Signal Guide §13 checklist.",
+]
+produces = ["ART:structure-voice-findings"]
+consumes = [
+  "ART:proposal-inventory",
+  "ART:synopsis-set",
+]
+critical_decisions = [
+  "Performed-authenticity patterns (§5.14) remain high-severity even in internal proposals; they are still low-signal.",
+]
+constraints = [
+  "Code blocks and pure data tables are exempt from voice/format rules.",
+]
+failure_modes = [
+  "Parser timeout on very long documents → enforce per-file time budget and emit parse-skipped rather than incomplete findings.",
+]
+rationale = "Structural and voice tells survive simple vocabulary swaps. They are essential for ranking signal quality."
+
+[units.U06]
+name = "reader-time-and-length-signal"
+summary = "Compute estimated reader time, flag documents whose length is not justified by structural completeness or synopsis quality, and produce a simple cost signal for the triage step."
+layer = 1
+tier = 1
+status = "pending"
+depends_on = [
+  "U01",
+  "U02",
+]
+blocks = ["U07"]
+estimated_loc = 120
+spec_sections = ["reader-time"]
+spec_anchors = ["rules/brevity"]
+files_create = [
+  "build/triage/reader_time_signals.json",
+]
+files_modify = []
+acceptance = [
+  "Each document receives an estimated_reading_minutes (words / 200) and a justified_length boolean.",
+  "Justified_length is true only if structural completeness ≥ threshold OR the synopsis itself is high-quality and the document type is ADR-lite.",
+  "Documents that fail both synopsis quality and structural completeness while being long are marked high_reader_cost.",
+]
+produces = ["ART:reader-time-signals"]
+consumes = [
+  "ART:proposal-inventory",
+  "ART:synopsis-set",
+]
+critical_decisions = [
+  "Reader-time is a first-class signal, not a soft suggestion. High reader-cost + low structural score is a strong demotion.",
+]
+constraints = [
+  "Do not punish necessary length. Only punish length that is not backed by required sections or a strong synopsis.",
+]
+failure_modes = [
+  "Over-penalising legitimate long design docs that correctly contain Alternatives and Consequences → structural score can override pure length penalty.",
+]
+rationale = "Directly operationalises Clay principles 3 and 4: respect the reader's time and do not treat longer as better."
+
+# ============================================================================
+# LAYER 2 — Triage
+# ============================================================================
+
+[units.U07]
+name = "triage-scoring-and-classification"
+summary = "Combine synopsis quality, ownership presence, structural completeness, High-Signal hit counts, and reader-time signals into a single per-document score. Classify each document into: shortlist | needs_edit | needs_rewrite | reject_or_defer | escalate_to_human. Produce the ranked shortlist that architects will actually see."
+layer = 2
+tier = 1
+status = "pending"
+depends_on = [
+  "U02",
+  "U03",
+  "U04",
+  "U05",
+  "U06",
+]
+blocks = [
+  "U08",
+  "U09",
+  "U10",
+]
+estimated_loc = 320
+spec_sections = ["triage"]
+spec_anchors = ["rules/scoring", "rules/shortlist"]
+files_create = [
+  "build/triage/triage.json",
+  "build/triage/shortlist.toml",
+  "build/triage/triage_report.md",
+]
+files_modify = []
+acceptance = [
+  "Every document receives a numeric score and one of the five classifications.",
+  "Shortlist contains only documents that passed synopsis + ownership + minimum structural gates and have acceptable High-Signal scores.",
+  "triage_report.md explains the ranking and lists the top reasons for exclusion or demotion.",
+  "Weighted scoring: synopsis failure or missing ownership = hard exclude from shortlist; structural incompleteness and High-Signal hits reduce rank; high reader-cost further demotes.",
+]
+produces = [
+  "ART:triage-result",
+  "ART:architect-shortlist",
+]
+consumes = [
+  "ART:synopsis-set",
+  "ART:ownership-attestations",
+  "ART:structural-findings",
+  "ART:vocab-findings",
+  "ART:structure-voice-findings",
+  "ART:reader-time-signals",
+]
+critical_decisions = [
+  "The shortlist is the only artefact senior architects are expected to read by default. Everything else is either fixed automatically, deferred, or escalated.",
+  "Human override remains possible but must be recorded.",
+]
+constraints = [
+  "Never put a document that failed the synopsis or ownership gate onto the shortlist without an explicit override record.",
+]
+failure_modes = [
+  "Score inflation that lets low-signal work through → keep synopsis and ownership as hard gates, not soft weights.",
+]
+rationale = "This is the unit that converts volume into a manageable judgement load. All prior units exist to make this classification accurate and defensible."
+
+# ============================================================================
+# LAYER 3 — Remediation & enrichment
+# ============================================================================
+
+[units.U08]
+name = "writing-quality-remediation"
+summary = "For documents classified needs_edit or needs_rewrite, apply the High-Signal remediation path (surgical edit or full rewrite from notes) using the same policy as the original writing-audit DAG. Re-attach the original synopsis and ownership attestation."
+layer = 3
+tier = 1
+status = "pending"
+depends_on = ["U07"]
+blocks = ["U11"]
+estimated_loc = 350
+spec_sections = ["§12"]
+spec_anchors = ["rules/rewrite", "rules/edit"]
+files_create = [
+  "build/triage/remediated/",
+]
+files_modify = []
+acceptance = [
+  "needs_rewrite documents are rewritten from the synopsis + original notes, not sentence-edited.",
+  "needs_edit documents receive targeted fixes only.",
+  "Ownership attestation and synopsis are preserved or re-confirmed after remediation.",
+]
+produces = ["ART:remediated-set"]
+consumes = ["ART:triage-result"]
+critical_decisions = [
+  "Rewrite threshold remains the same as the original High-Signal guide (weighted hits ≥ 3).",
+]
+constraints = [
+  "Do not alter the author's claimed decision or technical content during remediation; only the prose surface.",
+]
+failure_modes = [
+  "Remediation that changes meaning → require human review of any rewrite before it can re-enter the shortlist.",
+]
+rationale = "Writing quality failures should be fixed before they consume architect time, but never at the cost of changing the author's intent."
+
+[units.U09]
+name = "impact-and-blast-radius-enrichment"
+summary = "For shortlisted and borderline documents, extract or request explicit statements of impacted systems, services, data domains, or teams. Produce a lightweight impact summary that architects can use for prioritisation and conflict detection."
+layer = 3
+tier = 1
+status = "pending"
+depends_on = ["U07"]
+blocks = ["U10"]
+estimated_loc = 180
+spec_sections = ["impact"]
+spec_anchors = ["rules/blast-radius"]
+files_create = [
+  "build/triage/impact_summaries.json",
+]
+files_modify = []
+acceptance = [
+  "Each shortlisted document has an impact summary listing named systems/services or an explicit 'unknown / needs architect input' marker.",
+  "Cross-document impact collisions (same system claimed by multiple proposals) are flagged.",
+]
+produces = ["ART:impact-summaries"]
+consumes = ["ART:architect-shortlist"]
+critical_decisions = [
+  "Unknown impact is acceptable but must be visible; it is better than invented impact.",
+]
+constraints = [
+  "Do not invent system names. Prefer extraction from the Consequences / Impact section or explicit author declaration.",
+]
+failure_modes = [
+  "Missing impact data on a high-ranked proposal → still allow onto shortlist but mark as incomplete_impact so architects see the gap.",
+]
+rationale = "Architects care about coherence of the systems of systems. Surface the impact early so conflicts and sequencing become visible."
+
+[units.U10]
+name = "evidence-pack-and-shortlist-assembly"
+summary = "Assemble the final artefacts that senior architects receive: ranked shortlist, per-document evidence pack (synopsis, ownership attestation, structural score, High-Signal score, impact summary, key findings), and a one-page triage dashboard."
+layer = 3
+tier = 1
+status = "pending"
+depends_on = [
+  "U07",
+  "U09",
+]
+blocks = ["U12"]
+estimated_loc = 200
+spec_sections = ["output"]
+spec_anchors = ["rules/evidence-pack"]
+files_create = [
+  "build/triage/evidence_packs/",
+  "build/triage/architect_dashboard.md",
+  "build/triage/final_shortlist.toml",
+]
+files_modify = []
+acceptance = [
+  "final_shortlist.toml contains only documents that passed the hard gates, ranked by composite score.",
+  "Each shortlisted item has a corresponding evidence pack directory or file with synopsis, scores, and impact.",
+  "architect_dashboard.md is readable in < 3 minutes and answers: how many proposals, how many shortlisted, top risks, top conflicts.",
+]
+produces = [
+  "ART:final-shortlist",
+  "ART:evidence-packs",
+  "ART:architect-dashboard",
+]
+consumes = [
+  "ART:architect-shortlist",
+  "ART:impact-summaries",
+]
+critical_decisions = [
+  "The dashboard and shortlist are the primary deliverables. Everything else is supporting evidence.",
+]
+constraints = [
+  "Do not bury the synopsis. It must be the first thing in every evidence pack.",
+]
+failure_modes = [
+  "Evidence packs that require opening the full original document defeat the purpose → keep packs self-contained.",
+]
+rationale = "This is the hand-off point. Architects receive a curated, evidence-backed shortlist instead of a firehose."
+
+# ============================================================================
+# LAYER 4 — Validation & sign-off
+# ============================================================================
+
+[units.U11]
+name = "post-remediation-regression"
+summary = "Re-run High-Signal vocabulary, structure, and voice scans on any remediated documents. Confirm that hit counts have dropped below the edit/rewrite thresholds and that synopsis + ownership remain intact."
+layer = 4
+tier = 1
+status = "pending"
+depends_on = ["U08"]
+blocks = ["U12"]
+estimated_loc = 150
+spec_sections = ["§13"]
+spec_anchors = ["rules/regression"]
+files_create = [
+  "build/triage/regression_report.json",
+]
+files_modify = []
+acceptance = [
+  "Every remediated document is re-scanned.",
+  "Documents that still exceed thresholds after remediation are escalated rather than silently passed.",
+  "Synopsis and ownership attestation are verified unchanged or explicitly re-attested.",
+]
+produces = ["ART:regression-report"]
+consumes = ["ART:remediated-set"]
+critical_decisions = [
+  "Regression failure returns the document to needs_edit / needs_rewrite or escalates; it does not auto-promote.",
+]
+constraints = [
+  "Only remediated documents are re-scanned; clean shortlist items are left alone.",
+]
+failure_modes = [
+  "Incomplete regression that misses residual tells → run the full High-Signal checklist, not a subset.",
+]
+rationale = "Remediation without verification is theatre. This unit closes the loop."
+
+[units.U12]
+name = "sign-off-and-attestation"
+summary = "Emit the final triage run attestation: rule-set hash, inventory hash, shortlist, counts (received / shortlisted / remediated / rejected / escalated), and a machine-readable closure record. Exit non-zero only on invariant violations or unhandled failures."
+layer = 5
+tier = 1
+status = "pending"
+depends_on = [
+  "U10",
+  "U11",
+]
+blocks = []
+estimated_loc = 120
+spec_sections = ["sign-off"]
+spec_anchors = ["rules/attestation"]
+files_create = [
+  "build/triage/CLEAN_SET.toml",
+  "build/triage/run_attestation.toml",
+  "build/triage/audit_summary.md",
+]
+files_modify = []
+acceptance = [
+  "run_attestation.toml records the High-Signal rule-set hash, inventory hash, final shortlist hash, and counts.",
+  "audit_summary.md is human-readable and contains the same numbers plus any escalations.",
+  "Exit code 0 only if all hard gates were enforced and no invariant was broken.",
+]
+produces = ["OUT:triage-run-attestation"]
+consumes = [
+  "ART:final-shortlist",
+  "ART:evidence-packs",
+  "ART:regression-report",
+]
+critical_decisions = [
+  "The attestation is the single artefact downstream systems (CI, ARB tooling, control plane) should trust.",
+]
+constraints = [
+  "Never modify source proposals in U12. This unit only attests and reports.",
+]
+failure_modes = [
+  "Hash mismatch between rule-set used in U04/U05 and the attested hash → abort; the run is not reproducible.",
+]
+rationale = "A signed, hash-chained run record makes the triage process itself auditable and prevents silent drift."
+
+# ============================================================================
+# COMPUTED (derived from units, never guessed)
+# ============================================================================
+
+[computed]
+entry_points = [
+  "U01",
+]
+leaf_nodes = ["U12"]
+critical_path = [
+  "U01",
+  "U02",
+  "U07",
+  "U10",
+  "U12",
+]
+critical_path_loc = 1040
+
+[computed.max_parallel]
+layer0 = 1
+layer1 = 4
+layer2 = 1
+layer3 = 3
+layer4 = 1
+layer5 = 1
+
+[[computed.conflict_groups]]
+files = ["build/triage/inventory.toml", "build/triage/inventory.json"]
+units = ["U01"]
+
+[[computed.conflict_groups]]
+files = ["build/triage/synopsis_set.toml", "build/triage/ownership_attestations.toml"]
+units = ["U02"]
+
+[[computed.conflict_groups]]
+files = ["build/triage/structural_findings.json"]
+units = ["U03"]
+
+[[computed.conflict_groups]]
+files = ["build/triage/findings_vocab.json"]
+units = ["U04"]
+
+[[computed.conflict_groups]]
+files = ["build/triage/findings_structure_voice.json"]
+units = ["U05"]
+
+[[computed.conflict_groups]]
+files = ["build/triage/reader_time_signals.json"]
+units = ["U06"]
+
+[[computed.conflict_groups]]
+files = ["build/triage/triage.json", "build/triage/shortlist.toml", "build/triage/triage_report.md"]
+units = ["U07"]
+
+[[computed.conflict_groups]]
+files = ["build/triage/remediated/"]
+units = ["U08"]
+
+[[computed.conflict_groups]]
+files = ["build/triage/impact_summaries.json"]
+units = ["U09"]
+
+[[computed.conflict_groups]]
+files = ["build/triage/evidence_packs/", "build/triage/architect_dashboard.md", "build/triage/final_shortlist.toml"]
+units = ["U10"]
+
+[[computed.conflict_groups]]
+files = ["build/triage/regression_report.json"]
+units = ["U11"]
+
+[[computed.conflict_groups]]
+files = ["build/triage/CLEAN_SET.toml", "build/triage/run_attestation.toml", "build/triage/audit_summary.md"]
+units = ["U12"]
+
+[computed.loc_totals]
+tier1 = 2580
+tier2 = 0
+tier3 = 0
+all = 2580
