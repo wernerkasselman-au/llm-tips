@@ -19,6 +19,9 @@ jobs:
       - name: Python version (needs 3.11+ for tomllib)
         run: python3 -c "import sys, tomllib; print(sys.version)"
 
+      - name: Linter test suite
+        run: python3 -m unittest discover -s tests -v
+
       - name: Checker test suite
         run: python3 -m unittest discover -s skills/high-signal-proposal-triage/tests -v
 

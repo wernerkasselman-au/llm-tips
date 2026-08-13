@@ -85,8 +85,9 @@ That covers per-file vocabulary, structure, voice, and formatting scans (U04, U0
 NOT executable: the synopsis 1.5x weighting (proposal_triage_dag.toml:214), the weighted \
 scoring and rewrite routing of U07, and any document-plus-synopsis pairing. The linter \
 scores nothing and routes nothing; it reports violations per file. \
-Also note AIS:TN02 (opinionated_claims_per_document_minimum) has no implementation and \
-silently returns no violations while still being counted in the 'applied N contracts' total."""
+Also note AIS:TN02 (opinionated_claims_per_document_minimum) has no implementation. The \
+linter reports it under NOT CHECKED and excludes it from the applied count, so a clean run \
+no longer implies it was tested. Run with --strict-metrics to make any such gap exit 2."""
 
 [[requirements]]
 id = "REQ:evidence-pack"

@@ -42,6 +42,15 @@ file's content type. The default is always `prose` regardless of extension
 `--applicability prose|docs|technical_docs|marketing|code_comments|commit_messages`
 to select another.
 
+A contract that declares a `density_metric` nothing implements is reported under
+`NOT CHECKED` and excluded from the applied count, rather than counted as applied
+and passing silently. `AIS:TN02` (`opinionated_claims_per_document_minimum`) is
+the one such gap today: "take a position" isn't reliably detectable by pattern,
+and a detector that reports "no position taken" about a document that plainly
+takes one would be worse than declaring the gap. Pass `--strict-metrics` to turn
+any such gap into exit 2, which is how CI catches a policy and linter that have
+drifted apart.
+
 ## Triage thresholds
 
 The DAG (`audit_dag.toml`, unit `U06`) encodes the recommended hit-weighted

@@ -19,6 +19,7 @@ Exit codes:
 from __future__ import annotations
 
 import argparse
+import inspect
 import math
 import pathlib
 import re
@@ -71,11 +72,20 @@ class LintReport:
     applied: int = 0
     skipped: int = 0
     violations: list[Violation] = field(default_factory=list)
+    unimplemented: list[tuple[str, str]] = field(default_factory=list)
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Lint prose against a high-signal policy TOML.")
     parser.add_argument("files", nargs="+", help="Prose file(s) to lint (markdown, plain text).")
+    parser.add_argument(
+        "--strict-metrics",
+        action="store_true",
+        help=(
+            "Exit 2 if the policy declares a density_metric that nothing implements. "
+            "Use in CI to catch a policy and linter that have drifted apart."
+        ),
+    )
     parser.add_argument(
         "--policy",
         required=True,
@@ -481,8 +491,40 @@ def apply_structural_metrics(contract: dict, text: str) -> list[Violation]:
             ]
         return []
 
-    # Metrics we do not automate (opinion density, citation integrity, etc.).
+    # Unreachable for contracts routed through lint_file, which filters
+    # unimplemented metrics out first. Kept as a guard for direct callers.
     return []
+
+
+def _implemented_metrics() -> frozenset[str]:
+    """Read the implemented metric names out of the dispatch itself.
+
+    Retyping the list here would create a second source of truth that silently
+    disables real checks the moment the two drift. That is not hypothetical: the
+    first version of this function was hand-typed and turned off four working
+    contracts because the names were guessed rather than read.
+    """
+    source = inspect.getsource(apply_structural_metrics)
+    return frozenset(re.findall(r'metric == "([a-z0-9_]+)"', source))
+
+
+IMPLEMENTED_METRICS: frozenset[str] = _implemented_metrics()
+
+
+def unimplemented_metric(contract: dict) -> str | None:
+    """Return the contract's density_metric if nothing implements it.
+
+    Such a contract used to be counted as applied while returning no violations,
+    which reads identically to a clean pass. It is reported separately now.
+    AIS:TN02 (opinionated_claims_per_document_minimum) is the standing example:
+    "take a position" is not reliably detectable by pattern, and a detector that
+    reports "no position taken" about a document that plainly takes one is worse
+    than declaring the gap.
+    """
+    metric = contract.get("density_metric")
+    if metric and metric not in IMPLEMENTED_METRICS:
+        return metric
+    return None
 
 
 def apply_contract(contract: dict, text: str, line_starts: list[int]) -> list[Violation]:
@@ -522,6 +564,9 @@ def render_report(report: LintReport, fmt: str) -> str:
             "policy": str(report.policy),
             "applied_contracts": report.applied,
             "skipped_contracts": report.skipped,
+            "unimplemented_contracts": [
+                {"rule_id": rid, "density_metric": metric} for rid, metric in report.unimplemented
+            ],
             "violation_count": len(report.violations),
             "violations": [
                 {
@@ -540,6 +585,13 @@ def render_report(report: LintReport, fmt: str) -> str:
     lines.append(f"file:   {report.file}")
     lines.append(f"policy: {report.policy}")
     lines.append(f"applied {report.applied} contracts (skipped {report.skipped} non-applicable)")
+    if report.unimplemented:
+        lines.append(
+            f"NOT CHECKED: {len(report.unimplemented)} contract(s) declare a metric with no "
+            "implementation, so this file was never tested against them:"
+        )
+        for rid, metric in report.unimplemented:
+            lines.append(f"  {rid} ({metric})")
     if not report.violations:
         lines.append("no violations")
         return "\n".join(lines)
@@ -574,6 +626,10 @@ def lint_file(path: pathlib.Path, policy: dict, target_set: set[str]) -> LintRep
         if not contract_applies(contract, target_set):
             report.skipped += 1
             continue
+        metric = unimplemented_metric(contract)
+        if metric is not None:
+            report.unimplemented.append((contract["id"], metric))
+            continue
         report.applied += 1
         report.violations.extend(apply_contract(contract, text, line_starts))
     return report
@@ -593,6 +649,7 @@ def main() -> int:
 
     target_set = normalize_applicability(args.applicability)
     any_failed = False
+    unimplemented_seen: set[tuple[str, str]] = set()
     for file_arg in args.files:
         path = pathlib.Path(file_arg)
         if not path.exists():
@@ -601,9 +658,17 @@ def main() -> int:
             continue
         report = lint_file(path, policy, target_set)
         report.policy = policy_path
+        unimplemented_seen.update(report.unimplemented)
         print(render_report(report, args.format))
         if failure_policy(report.violations, args.fail_on):
             any_failed = True
+
+    if args.strict_metrics and unimplemented_seen:
+        sys.stderr.write(
+            "strict-metrics: the policy declares metrics with no implementation:\n"
+            + "".join(f"  {rid} ({metric})\n" for rid, metric in sorted(unimplemented_seen))
+        )
+        return 2
 
     return 1 if any_failed else 0
 

@@ -31,7 +31,7 @@ found first.
 | Triage DAG | `../../tools/proposal_triage_dag.toml` | Executable 12-unit triage workflow. Holds the thresholds. |
 | Writing guide | `../../high_signal_writing_guide.md` | Writing standards (ownership, specificity, anti-padding). |
 | Style policy | `../../tools/style_policy.toml` | ~50 machine-readable contracts the linter executes. |
-| Linter | `../../tools/lint_writing_style.py` | The only executable content gate today. Run it from the repo root, not from here. |
+| Linter | `../../tools/lint_writing_style.py` | Executes the text scans. Run it from the repo root, not from here. |
 | This contract | `contract-declaration.toml` | Requirement IDs, severities, promotion rules. |
 | Packet checker | `check_proposal.py` | Executes the structural gates. Run from the repo root. |
 | Checker tests | `tests/test_check_proposal.py` | 29 tests, negative cases in ADD form. |
@@ -55,7 +55,7 @@ Be precise about this, because an unexecuted gate is indistinguishable from no g
 | Structural minimums for the document type | Executable for heading presence and for naming a rejected alternative. Whether the rejection reason is sound is not checked. |
 | Ownership attestation | Executable for presence, named author, statement, and ISO signature date. The truth of the attestation is not checkable by anyone. |
 | Evidence pack shape | Executable. Pack parses, items exist, synopsis leads when one exists. |
-| High-Signal vocabulary, structure, voice, formatting scans | Executable, per file. `lint_writing_style.py` against `style_policy.toml`. One caveat: `AIS:TN02` has no implementation and returns clean silently while still counting toward the reported "applied N contracts". |
+| High-Signal vocabulary, structure, voice, formatting scans | Executable, per file. `lint_writing_style.py` against `style_policy.toml`. `AIS:TN02` has no implementation; the linter now reports it under `NOT CHECKED` and excludes it from the applied count instead of passing it silently. |
 | Synopsis 1.5x weighting and U07 scoring/routing | Not executable. The linter reports violations per file; it scores nothing and routes nothing. |
 | Ranked shortlist assembly, reader-time signal, impact grounding | Not executable. Agent-performed. |
 
