@@ -1,0 +1,13 @@
+# Evidence pack. REQ:evidence-pack checks that the first item is the synopsis and
+# that every listed item exists. Paths are relative to this file.
+
+[pack]
+items = [
+  "synopsis.md",
+  "proposal.md",
+  "ownership.toml",
+]
+
+[context]
+doc_type = "design-doc"
+reviewer_note = "Shortlist entry. Read the synopsis first; the rest is supporting material."

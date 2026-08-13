@@ -1,0 +1,12 @@
+# Ownership attestation. REQ:ownership-present checks that this exists, names an
+# author, carries a statement, and is signed with an ISO date. It does not and
+# cannot check that the thinking behind the document is the author's own.
+
+[attestation]
+author = "A. Reviewer"
+signed = 2026-08-13
+statement = """
+I stand behind every claim, structure, and emphasis in this proposal and its
+synopsis. Where I used a model to draft or edit, I read every line and I am the
+one answering for it in review.
+"""

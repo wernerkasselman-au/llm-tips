@@ -4,8 +4,9 @@ description: >
   Apply High-Signal writing standards and structural proposal checks before any
   design doc, RFC, ADR, or architecture recommendation is shortlisted for senior
   review: short synopsis, ownership attestation, ADR/Design-Doc sections, ranked
-  evidence packs. Mostly agent-performed discipline, not automated enforcement.
-  Only the High-Signal text scans execute today; see "What is actually enforced".
+  evidence packs. The packet shape and the text scans are checked by
+  check_proposal.py and the linter in CI. Ranking, routing, and judgement of
+  content quality remain agent-performed; see "What is actually enforced".
 ---
 
 # High-Signal Proposal Triage
@@ -31,7 +32,10 @@ found first.
 | Writing guide | `../../high_signal_writing_guide.md` | Writing standards (ownership, specificity, anti-padding). |
 | Style policy | `../../tools/style_policy.toml` | ~50 machine-readable contracts the linter executes. |
 | Linter | `../../tools/lint_writing_style.py` | The only executable content gate today. Run it from the repo root, not from here. |
-| This contract | `contract-declaration.toml` | Requirement IDs, severities, promotion rules. Declarative, see below. |
+| This contract | `contract-declaration.toml` | Requirement IDs, severities, promotion rules. |
+| Packet checker | `check_proposal.py` | Executes the structural gates. Run from the repo root. |
+| Checker tests | `tests/test_check_proposal.py` | 29 tests, negative cases in ADD form. |
+| Worked example | `examples/minimal-proposal-packet/` | A packet that passes. Doubles as the test fixture. |
 
 ## Single source of truth for thresholds
 
@@ -46,16 +50,35 @@ Be precise about this, because an unexecuted gate is indistinguishable from no g
 
 | Gate | Status |
 | --- | --- |
-| High-Signal vocabulary, structure, voice, formatting scans | Executable, per file. `lint_writing_style.py` against `style_policy.toml`, run from the repo root. One caveat: `AIS:TN02` has no implementation and returns clean silently while still counting toward the reported "applied N contracts". |
+| Synopsis presence and word cap | Executable. `check_proposal.py`, thresholds read from the DAG. |
+| Four synopsis elements (Problem, Proposed action, Trade-off or Impact, Ask) | Executable, as labelled lines. Their quality is not checked. |
+| Structural minimums for the document type | Executable for heading presence and for naming a rejected alternative. Whether the rejection reason is sound is not checked. |
+| Ownership attestation | Executable for presence, named author, statement, and ISO signature date. The truth of the attestation is not checkable by anyone. |
+| Evidence pack shape | Executable. Pack parses, items exist, synopsis leads when one exists. |
+| High-Signal vocabulary, structure, voice, formatting scans | Executable, per file. `lint_writing_style.py` against `style_policy.toml`. One caveat: `AIS:TN02` has no implementation and returns clean silently while still counting toward the reported "applied N contracts". |
 | Synopsis 1.5x weighting and U07 scoring/routing | Not executable. The linter reports violations per file; it scores nothing and routes nothing. |
-| Synopsis presence and word cap | Not executable. No runner exists. Checkable in principle: it is a word count. |
-| Structural minimums (Goals, Non-goals, Alternatives, Consequences) | Not executable. No runner exists. Checkable in principle: heading presence. |
-| Ownership attestation | Presence is checkable. The truth of the attestation is not, by anyone. See below. |
-| Ranked shortlist and evidence pack assembly | Not executable. Agent-performed. |
+| Ranked shortlist assembly, reader-time signal, impact grounding | Not executable. Agent-performed. |
 
-Producing the missing checker is the next artefact, not a footnote. Until it
-exists, this skill is a disciplined operating manual, not an enforcement layer,
-and it should be described that way to anyone who asks.
+Run both gates from the repo root:
+
+```bash
+python3 skills/high-signal-proposal-triage/check_proposal.py \
+  --packet skills/high-signal-proposal-triage/examples/minimal-proposal-packet \
+  --lint-policy tools/style_policy.toml
+```
+
+Exit 0 clean, 1 violations, 2 invocation error. The checker reads its thresholds
+from the DAG at run time and exits 2 if the DAG doesn't state them unambiguously.
+It never falls back to a built-in default, because a gate that guesses its own
+threshold isn't a gate.
+
+Both run in CI (`.github/workflows/proposal-checks.yml`) alongside the checker's
+29 tests. Every negative test adds a violation rather than removing a rule, and
+the suite kills all 12 mutants of the checker's own logic that I tried.
+
+What remains agent-performed is judgement: whether the synopsis is any good,
+whether the rejected alternative was rejected for a real reason, whether the
+shortlist ranking is right. Don't report those as checked.
 
 ## Required behaviour
 

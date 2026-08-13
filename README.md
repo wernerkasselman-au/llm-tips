@@ -18,6 +18,10 @@ See [`tools/README.md`](tools/README.md) for usage.
 - `tools/audit_dag.toml`: original writing audit and fix DAG.
 - `tools/proposal_triage_dag.toml`: ServiceNow-scale proposal triage DAG. Adds mandatory short synopsis (≤ 180 words for documents ≥ 600 words), ownership attestation, ADR/Design-Doc structural gates, reader-time signals, and a prioritised shortlist + evidence pack for senior architects.
 
+## Skills
+
+- [`skills/high-signal-proposal-triage/`](skills/high-signal-proposal-triage/): agent skill wrapping the triage DAG. Ships `check_proposal.py`, which executes the synopsis, ownership, structure, and evidence-pack gates with thresholds read from the DAG, plus 29 tests and a worked example packet. Runs in CI.
+
 ## License
 
 MIT, see [`LICENSE`](LICENSE).

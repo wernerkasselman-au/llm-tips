@@ -1,0 +1,54 @@
+name: proposal-checks
+# Executable gates for the High-Signal Proposal Triage skill:
+#   1. the checker's own test suite (29 tests, all negative cases in ADD form)
+#   2. the checker run against the shipped example packet
+#   3. the writing linter over the documents that are meant to stay clean
+# A document that is deliberately not yet migrated (style_guide.md and friends)
+# is excluded by name, not by silence.
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  proposal-triage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd  # v4
+
+      - name: Python version (needs 3.11+ for tomllib)
+        run: python3 -c "import sys, tomllib; print(sys.version)"
+
+      - name: Checker test suite
+        run: python3 -m unittest discover -s skills/high-signal-proposal-triage/tests -v
+
+      - name: Checker against the example packet
+        run: |
+          python3 skills/high-signal-proposal-triage/check_proposal.py \
+            --packet skills/high-signal-proposal-triage/examples/minimal-proposal-packet \
+            --lint-policy tools/style_policy.toml
+
+      - name: Writing linter over the documents that must stay clean
+        run: |
+          python3 tools/lint_writing_style.py \
+            --policy tools/style_policy.toml \
+            high_signal_writing_guide.md \
+            README.md \
+            tools/README.md \
+            skills/high-signal-proposal-triage/SKILL.md
+
+      - name: Every shipped TOML parses
+        run: |
+          python3 - <<'EOF'
+          import tomllib, pathlib, sys
+          bad = []
+          for p in sorted(pathlib.Path('.').rglob('*.toml')):
+              try:
+                  tomllib.load(open(p, 'rb'))
+              except Exception as exc:
+                  bad.append(f"{p}: {exc}")
+          print("\n".join(f"OK {p}" for p in sorted(pathlib.Path('.').rglob('*.toml'))))
+          if bad:
+              print("FAILED:", *bad, sep="\n  ")
+              sys.exit(1)
+          EOF

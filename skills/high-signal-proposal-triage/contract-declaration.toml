@@ -2,14 +2,15 @@
 #
 # Requirement IDs, severities, and promotion rules for proposal intake.
 #
-# ENFORCEMENT STATUS: declarative. No runner executes this file today. The only
-# executable CONTENT gate is tools/lint_writing_style.py against
-# tools/style_policy.toml, and it covers only part of REQ:high-signal (see that
-# requirement's checker_note). The repo has one other executable gate, unrelated to
-# proposal content: the CI commit-message workflow at
-# .github/workflows/no-ai-attribution.yml. Each requirement below carries an explicit
-# `enforcement` field. Do not describe this file as machine-checked until a checker
-# exists and is wired into CI.
+# ENFORCEMENT STATUS: executable, in part. check_proposal.py runs the structural
+# gates (REQ:synopsis, REQ:ownership-present, REQ:structure, REQ:evidence-pack) and
+# tools/lint_writing_style.py runs the text scans (part of REQ:high-signal). Both run
+# in CI via .github/workflows/proposal-checks.yml. Each requirement below states what
+# its checker does and does not cover; read those notes before citing this file as
+# proof that anything was enforced.
+#
+# The checker reads its thresholds from the DAG at run time and fails closed (exit 2)
+# if the DAG does not state them unambiguously. It never falls back to a default.
 #
 # THRESHOLDS ARE NOT DECLARED HERE. They live in the companion DAG. Restating a
 # number in two files guarantees the two will eventually disagree.
@@ -19,8 +20,10 @@ title = "High-Signal Proposal Triage Contract"
 template_kind = "contract-declaration"
 schema_version = "0.1.0"
 created = "2026-08-13"
-enforcement = "declarative"
-checker = "none yet"
+enforcement = "partial"
+checker = "check_proposal.py"
+checker_tests = "tests/test_check_proposal.py"
+ci_workflow = "../../.github/workflows/proposal-checks.yml"
 
 [source_of_truth]
 # Read every threshold from the DAG at load time. Paths are relative to this file.
@@ -47,27 +50,27 @@ id = "REQ:synopsis"
 statement = "A document above the DAG's synopsis trigger MUST supply a synopsis within the DAG's cap, containing problem, proposed action, primary trade-off or system impact, and explicit ask."
 severity = "hard"
 dag_unit = "U02"
-enforcement = "manual"
+enforcement = "executable"
 checkable = true
-checker_note = "Word count and four-element presence. Trivial to automate; nothing automates it today."
+checker_note = "Run from the repo root: python3 skills/high-signal-proposal-triage/check_proposal.py --packet <dir>. Checks the document against the DAG trigger, the synopsis against the DAG cap, and the four labelled elements (Problem, Proposed action, Trade-off or Impact, Ask). Does not judge whether the four elements are any good."
 
 [[requirements]]
 id = "REQ:ownership-present"
 statement = "An ownership attestation MUST be present and signed by a named author, and MUST be carried in the evidence pack."
 severity = "hard"
 dag_unit = "U02"
-enforcement = "manual"
+enforcement = "executable"
 checkable = true
-checker_note = "Presence and signature only. Deliberately narrowed from 'the author's own thinking', which no tool and no reviewer can verify. A gate must assert only what it can test."
+checker_note = "Run from the repo root: python3 skills/high-signal-proposal-triage/check_proposal.py --packet <dir>. Checks that ownership.toml exists, parses, has a non-empty [attestation] author and statement, and an ISO signed date. Presence and signature only. Nothing verifies that the thinking is the author's own, and no gate here claims to."
 
 [[requirements]]
 id = "REQ:structure"
 statement = "Design-doc, RFC, and SAD types MUST contain Goals, Non-goals, Alternatives considered with at least one rejected alternative and its reason, and Consequences or Impact. ADR-lite MAY substitute Context, Decision, Consequences."
 severity = "hard"
 dag_unit = "U03"
-enforcement = "manual"
+enforcement = "partial"
 checkable = true
-checker_note = "Heading presence plus non-empty body. The 'at least one rejected alternative' clause needs a human or a model; heading presence does not."
+checker_note = "Run from the repo root: python3 skills/high-signal-proposal-triage/check_proposal.py --packet <dir>. Checks heading presence for the document type, and that the Alternatives section names a rejected alternative. Does NOT check that the rejection reason is sound, or that a section has meaningful content beyond existing."
 
 [[requirements]]
 id = "REQ:high-signal"
@@ -90,9 +93,9 @@ id = "REQ:evidence-pack"
 statement = "A shortlisted item MUST ship a self-contained evidence pack whose first element is the synopsis."
 severity = "hard"
 dag_unit = "U10"
-enforcement = "manual"
+enforcement = "executable"
 checkable = true
-checker_note = "Structural check on the emitted pack, once a pack format is fixed. The format is not fixed yet."
+checker_note = "Run from the repo root: python3 skills/high-signal-proposal-triage/check_proposal.py --packet <dir>. Checks that the pack parses, that pack.items is non-empty, that every listed item exists on disk, and that the first item is the synopsis when a synopsis exists. A document below the trigger has no synopsis to lead with and is exempt from the ordering rule."
 
 [[requirements]]
 id = "REQ:reader-time"
@@ -121,9 +124,14 @@ gate_report_note = "The run MUST state which gates executed and which were skipp
 [roadmap]
 # Ordered. The example comes first because it is the checker's first fixture and
 # the fastest way to find out whether these rules survive a real document.
+done = [
+  "examples/minimal-proposal-packet/ (worked example, doubles as the test fixture)",
+  "check_proposal.py (synopsis trigger and cap, four-element presence, heading presence, rejected alternative, attestation, evidence-pack shape)",
+  "tests/test_check_proposal.py (29 tests; every negative case adds a violation rather than removing a rule)",
+  "CI wiring in .github/workflows/proposal-checks.yml",
+]
 next_artefacts = [
-  "examples/minimal-proposal-packet/ (worked example: synopsis.md, ownership.toml, evidence-pack.toml)",
-  "check_proposal.py (synopsis word count, four-element presence, heading presence, attestation presence)",
-  "CI wiring so the checker runs on proposal paths",
+  "reader-time signal (REQ:reader-time) has no checker",
   "architecture-inventory adapter to ground REQ:impact-summary",
+  "a synopsis quality check; presence of the four elements is not quality",
 ]
