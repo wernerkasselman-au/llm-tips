@@ -137,7 +137,7 @@ acceptance = [
   "rules.json includes the §6.9 false-range detector ('from X to Y' where neither endpoint is in an ordinal scale: dates, sizes, levels, prices).",
   "Density thresholds (em dashes per 1000 words, 'not X but Y' per piece, terminal-participial per 300 words) match §13.",
   "Loading is idempotent: rules.json hash is identical across re-runs of identical input.",
-  "When the canonical guide and the local STYLE_POLICY_ANTI_AI_TELL.toml conflict, canonical wins and the conflict is recorded in rules.json under `divergences`.",
+  "When the canonical guide and the local tools/style_policy.toml conflict, canonical wins and the conflict is recorded in rules.json under `divergences`.",
 ]
 produces = ["ART:rule-set"]
 consumes = []

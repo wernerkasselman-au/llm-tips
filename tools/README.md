@@ -11,6 +11,7 @@ Machine-checkable companions to the
 | [`style_policy.toml`](style_policy.toml) | Contract-declaration TOML encoding ~50 scannable rules from the style guide (vocab, openers/closers, structural patterns, voice, formatting). Each rule has a stable `AIS:*` id, applicability tags, and a detection mode (`word_boundary`, `phrase`, `regex`, density metric). |
 | [`lint_writing_style.py`](lint_writing_style.py) | Stdlib-only Python linter that applies the policy to a prose file and reports violations with line numbers. Exit 0 = clean, 1 = violations, 2 = invocation error. Requires Python 3.11+ (uses `tomllib`). |
 | [`audit_dag.toml`](audit_dag.toml) | A 10-unit implementation DAG describing the full audit-and-fix workflow: inventory → parallel scans → triage → rewrite/edit → regression → sign-off. Useful as an orchestration template if you want to fan the audit out across an agent fleet. |
+| [`proposal_triage_dag.toml`](proposal_triage_dag.toml) | A 12-unit triage DAG for proposal and design-doc intake at scale: mandatory synopsis (≤ 180 words for documents ≥ 600 words), ownership attestation gate, ADR/Design-Doc structural checks, parallel High-Signal quality scans, and a ranked shortlist plus evidence packs for senior architects. |
 
 ## Quick start
 
@@ -19,6 +20,8 @@ python3 tools/lint_writing_style.py \
   --policy tools/style_policy.toml \
   path/to/article.md
 ```
+
+If you're checking several files, pass them all in one invocation.
 
 Sample output:
 
@@ -34,9 +37,10 @@ applied 49 contracts (skipped 7 non-applicable)
 ```
 
 The linter applies only the contracts whose `applies_to` matches the input
-file's content type (defaults inferred from extension; pass
+file's content type. The default is always `prose` regardless of extension
+(`lint_writing_style.py:86`); pass
 `--applicability prose|docs|technical_docs|marketing|code_comments|commit_messages`
-to override).
+to select another.
 
 ## Triage thresholds
 
@@ -71,8 +75,9 @@ It doesn't automate:
 - "Does the piece read aloud as something a human would say?" (§13 voice
   audit)
 
-Those still need a human read. The §13 checklist calls these out: they're
-the residue after the linter has done its job.
+Those still need a human read; there's no mechanical proxy for any of them. The
+§13 checklist calls these out: they're the residue after the linter has done its
+job.
 
 ## License
 

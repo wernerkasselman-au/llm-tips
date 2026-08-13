@@ -1,0 +1,129 @@
+# High-Signal Proposal Triage Contract
+#
+# Requirement IDs, severities, and promotion rules for proposal intake.
+#
+# ENFORCEMENT STATUS: declarative. No runner executes this file today. The only
+# executable CONTENT gate is tools/lint_writing_style.py against
+# tools/style_policy.toml, and it covers only part of REQ:high-signal (see that
+# requirement's checker_note). The repo has one other executable gate, unrelated to
+# proposal content: the CI commit-message workflow at
+# .github/workflows/no-ai-attribution.yml. Each requirement below carries an explicit
+# `enforcement` field. Do not describe this file as machine-checked until a checker
+# exists and is wired into CI.
+#
+# THRESHOLDS ARE NOT DECLARED HERE. They live in the companion DAG. Restating a
+# number in two files guarantees the two will eventually disagree.
+
+[meta]
+title = "High-Signal Proposal Triage Contract"
+template_kind = "contract-declaration"
+schema_version = "0.1.0"
+created = "2026-08-13"
+enforcement = "declarative"
+checker = "none yet"
+
+[source_of_truth]
+# Read every threshold from the DAG at load time. Paths are relative to this file.
+companion_dag = "../../tools/proposal_triage_dag.toml"
+companion_guide = "../../high_signal_writing_guide.md"
+executable_policy = "../../tools/style_policy.toml"
+executable_checker = "../../tools/lint_writing_style.py"
+
+# Where each number actually lives, by DAG unit rather than by line number, so
+# this mapping survives edits to the DAG.
+synopsis_trigger = "units.U01 (document classification by word count)"
+synopsis_cap = "units.U02 (synopsis-and-ownership-gate)"
+structural_minimums = "units.U03 (structural-section-check)"
+rewrite_threshold = "units.U07 (triage-scoring-and-classification)"
+
+[policy]
+# Which gates block automatic shortlisting. Numbers deliberately absent.
+hard_gates = ["REQ:synopsis", "REQ:ownership-present", "REQ:structure", "REQ:high-signal", "REQ:evidence-pack"]
+soft_signals = ["REQ:reader-time", "REQ:impact-summary"]
+report_skipped_gates = true
+
+[[requirements]]
+id = "REQ:synopsis"
+statement = "A document above the DAG's synopsis trigger MUST supply a synopsis within the DAG's cap, containing problem, proposed action, primary trade-off or system impact, and explicit ask."
+severity = "hard"
+dag_unit = "U02"
+enforcement = "manual"
+checkable = true
+checker_note = "Word count and four-element presence. Trivial to automate; nothing automates it today."
+
+[[requirements]]
+id = "REQ:ownership-present"
+statement = "An ownership attestation MUST be present and signed by a named author, and MUST be carried in the evidence pack."
+severity = "hard"
+dag_unit = "U02"
+enforcement = "manual"
+checkable = true
+checker_note = "Presence and signature only. Deliberately narrowed from 'the author's own thinking', which no tool and no reviewer can verify. A gate must assert only what it can test."
+
+[[requirements]]
+id = "REQ:structure"
+statement = "Design-doc, RFC, and SAD types MUST contain Goals, Non-goals, Alternatives considered with at least one rejected alternative and its reason, and Consequences or Impact. ADR-lite MAY substitute Context, Decision, Consequences."
+severity = "hard"
+dag_unit = "U03"
+enforcement = "manual"
+checkable = true
+checker_note = "Heading presence plus non-empty body. The 'at least one rejected alternative' clause needs a human or a model; heading presence does not."
+
+[[requirements]]
+id = "REQ:high-signal"
+statement = "Document and synopsis MUST be scanned against the High-Signal Writing Guide. Weighted hits at or above the DAG's rewrite threshold trigger rewrite from the notes rather than sentence edits."
+severity = "hard"
+dag_units = ["U04", "U05", "U07"]
+enforcement = "partial"
+checkable = true
+checker_note = """Executable part, run from the repo root: python3 tools/lint_writing_style.py \
+--policy tools/style_policy.toml <file>. Exit 0 clean, 1 violations, 2 invocation error. \
+That covers per-file vocabulary, structure, voice, and formatting scans (U04, U05) only. \
+NOT executable: the synopsis 1.5x weighting (proposal_triage_dag.toml:214), the weighted \
+scoring and rewrite routing of U07, and any document-plus-synopsis pairing. The linter \
+scores nothing and routes nothing; it reports violations per file. \
+Also note AIS:TN02 (opinionated_claims_per_document_minimum) has no implementation and \
+silently returns no violations while still being counted in the 'applied N contracts' total."""
+
+[[requirements]]
+id = "REQ:evidence-pack"
+statement = "A shortlisted item MUST ship a self-contained evidence pack whose first element is the synopsis."
+severity = "hard"
+dag_unit = "U10"
+enforcement = "manual"
+checkable = true
+checker_note = "Structural check on the emitted pack, once a pack format is fixed. The format is not fixed yet."
+
+[[requirements]]
+id = "REQ:reader-time"
+statement = "A reader-time and length-justification signal SHOULD accompany every triaged document."
+severity = "soft"
+dag_unit = "U06"
+enforcement = "manual"
+checkable = true
+
+[[requirements]]
+id = "REQ:impact-summary"
+statement = "Impacted systems, services, data domains, and teams SHOULD be stated explicitly for shortlisted and borderline documents."
+severity = "soft"
+dag_unit = "U09"
+enforcement = "manual"
+checkable = false
+checker_note = "Free text today. Becomes checkable only against a real architecture inventory, which does not exist here."
+
+[promotion]
+# What must hold before a document reaches a senior architect.
+blocks_on = ["hard"]
+auto_promote = false
+requires_gate_report = true
+gate_report_note = "The run MUST state which gates executed and which were skipped. A run that skipped every unexecutable gate must not be reported as a clean pass."
+
+[roadmap]
+# Ordered. The example comes first because it is the checker's first fixture and
+# the fastest way to find out whether these rules survive a real document.
+next_artefacts = [
+  "examples/minimal-proposal-packet/ (worked example: synopsis.md, ownership.toml, evidence-pack.toml)",
+  "check_proposal.py (synopsis word count, four-element presence, heading presence, attestation presence)",
+  "CI wiring so the checker runs on proposal paths",
+  "architecture-inventory adapter to ground REQ:impact-summary",
+]
