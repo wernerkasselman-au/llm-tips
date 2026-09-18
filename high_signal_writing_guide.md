@@ -8,7 +8,7 @@ Four domains where low-signal writing is most damaging: (1) published prose (art
 
 ## Principle
 
-The goal is prose free of the uniform, risk-averse, noun-heavy, rhetorically predictable voice that models produce when trained to please raters. That voice lacks the specific observational grit that makes human writing worth reading.
+The goal is prose free of the uniform, risk-averse, noun-heavy, rhetorically predictable voice that models produce when trained to please raters. That voice lacks the specific observational grit that makes human writing worth reading. Evading AI detectors is a side effect at best.
 
 ## How to use
 

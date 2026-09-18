@@ -4,7 +4,7 @@ A definitive, evidence-based reference for writing prose, documentation, article
 
 **Scope.** This guide covers English-language writing across four domains where AI tells are most damaging: (1) published prose (articles, blogs, essays, marketing), (2) technical documentation (specs, READMEs, guides), (3) code comments, and (4) commit messages / PR descriptions / issue comments. It applies to writing produced by humans, by LLMs, or by humans editing LLM drafts.
 
-**Principle.** The goal is prose free of the statistical fingerprints of a model trained to please human raters, because that voice is uniform, risk-averse, information-dense in a noun-heavy way, rhetorically predictable, and devoid of the specific observational grit that makes human writing worth reading.
+**Principle.** The goal is prose free of the statistical fingerprints of a model trained to please human raters, because that voice is uniform, risk-averse, information-dense in a noun-heavy way, rhetorically predictable, and devoid of the specific observational grit that makes human writing worth reading. Evading AI detectors is a side effect at best.
 
 **How to use this guide.** For greenfield writing, internalise §2 and §3, then run §13's checklist before publishing. For AI-assisted drafts, treat every list in §4–§10 as a grep target: ten or more hits per piece means rewrite, not edit. Rewriting from scratch using the AI draft as notes is almost always faster than editing an AI draft sentence by sentence (see §12.4).
 
@@ -863,11 +863,11 @@ Tell count:
 - Structural: "It's not X — it's Y" (negative parallelism); "In today's … landscape" (opener ban); "Ultimately … testament" (hype close); three-noun tricolons ("tools," "culture," "frameworks"); every sentence within ±15% of the same length.
 - Voice: no position, no specific, no named threat, no named tool, no year, no number.
 
-**After (human rewrite, 64 words):**
+**After (rewrite, 69 words):**
 
-> Cybersecurity is a work-culture problem dressed up as a tooling problem. In the 2024 Verizon DBIR, 68% of breaches involved a non-malicious human action: someone who clicked, mis-configured, or re-used a password. No new EDR fixes that. The useful question is which of our processes would have caught the incident, and teams that answer it honestly usually find the weak link in code review.
+> Cybersecurity is a work-culture problem dressed up as a tooling problem. In the 2024 Verizon DBIR, 68% of breaches involved a non-malicious human action: someone who clicked a phishing link, misconfigured a server, or reused a password. No new EDR fixes that. The useful question is which of our processes would have caught the incident, and teams that answer it honestly usually find the weak link in code review.
 
-Same claim-space, different voice: opinionated, specific source (2024 Verizon DBIR), specific percentage (68%), named tool category (EDR), concrete recommendation (code review). Zero Tier-1 vocabulary. No negative parallelism. Sentence lengths: 11, 21, 5, 27 words, coefficient of variation 0.53.
+Same claim-space, different voice: opinionated, specific source (2024 Verizon DBIR), specific percentage (68%), named tool category (EDR), concrete recommendation (code review). Zero Tier-1 vocabulary. No negative parallelism. Sentence lengths: 11, 26, 5, 27 words, coefficient of variation 0.55.
 
 ### 14.2 Technical README rewrite
 
@@ -935,11 +935,12 @@ Similar length, specific runtime versions, specific protocols, specific provider
 
 ## 16. Meta: this guide against its own rules
 
-A guide that catalogues banned words has to print them, so a raw linter count mostly measures the catalogue. Measured on this revision with `tools/lint_writing_style.py`:
+A guide that catalogues banned words has to print them. A raw linter count therefore mostly measures the catalogue. Run over the whole file on this revision, `tools/lint_writing_style.py` reports 326 hits, and nearly all of them sit where a banned word is the thing being discussed: the word tables, the quoted AI drafts, the §13 checklist, the headings and reference titles that name a pattern, and the word lists of §4.
 
-- **The whole file** reports 326 hits. They sit in the word tables, the quoted AI drafts, the §13 checklist, the headings that name a pattern, the reference titles, and the bold labels and word lists of §4.
-- **The guide's own prose**, measured by linting a copy with those removed (tables, block quotes, headings, §13, §15, quoted phrases and bold labels), has no em dashes, no horizontal rules above headings, and no negative parallelism in the forms §5.1 lists. The last was also checked by reading, because the linter's pattern for it misses the em-dash and "not X, but Y" forms. The remaining lexical hits in that copy are lists of the banned terms themselves: the §4.9 era lists, the §9.1 name list and the §14 tell counts.
-- **Where it misses its own thresholds:** contractions run at 3.7 per 1,000 words of its own prose against the linter's minimum of 8, which §7.3 allows for formal reference documentation; 7 of its 11 enumerations have exactly three items, against a 30% limit; and bold runs at 2.7 per 200 words across the whole file, almost all of it the labels of reference lists.
-- **The seven em dashes that remain** are inside quotations: examples whose subject is the em dash or the pattern it forms (§2 item 6, §5.1, §5.10 rule 3, the §14.1 AI draft and its tell count), a quotation from Freeburg in §5.10, and a source title in §15.
+The fairer test is the guide's own prose. That was measured by linting a copy with the tables, block quotes, headings, quoted phrases and bold labels taken out, along with §13, §15 and this section. The copy has no em dashes and no horizontal rules above headings. It also has no negative parallelism in the forms §5.1 lists, which was checked by reading as well, because the linter's pattern for it misses the em-dash and "not X, but Y" forms. What the linter still finds there is the banned vocabulary itself, listed in §4.9 and §9.1 and counted in §14.
 
-Earlier revisions of this section said the guide passed its own checklist. It did not: it carried 100 em dashes, a horizontal rule above every section, four negative-parallelism constructions of the forms §5.1 lists (one of them in the §14.1 rewrite presented as clean), and citations that did not match their sources. This revision corrects them.
+Three thresholds are still missed. Contractions run at 3.7 per 1,000 words of the guide's own prose, under the linter's minimum of 8; §7.3 allows that for formal reference documentation. Seven of its 11 enumerations have exactly three items, against a 30% limit. Bold runs at 2.6 per 200 words across the whole file, almost all of it in the labels of reference lists.
+
+Seven em dashes remain, all inside quotations. Five are examples whose subject is the em dash or the pattern it forms (§2 item 6, §5.1, §5.10 rule 3, and the §14.1 AI draft with its tell count). The other two are a quotation from Freeburg in §5.10 and a source title in §15.
+
+Earlier revisions of this section said the guide passed its own checklist, while the file carried 100 em dashes, a horizontal rule above every section, four negative-parallelism constructions of the forms §5.1 lists (one of them in the §14.1 rewrite, which was presented as clean) and citations that didn't match their sources. This revision corrects them.

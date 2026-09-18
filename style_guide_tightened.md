@@ -50,7 +50,7 @@ RLHF trains a reward model on rater preferences and optimises toward high-reward
 
 Chosen completions tend to be longer, more hedged, more "balanced," more rhetorically polished; rejected ones are flat and declarative. The contrastive objective installs four tells:
 
-1. **"It's not X, it's Y"** antithesis is the surface form of contrastive training: it repudiates the rejected and proposes the preferred.
+1. **"It's not X, it's Y"** antithesis (surface form of contrastive training): repudiates the rejected, proposes the preferred.
 2. **Hype register** ("crucial," "pivotal," "transformative," "testament to"): preferred by raters wanting answers to "sound smart."
 3. **Both-sides framing** ("While X is true, Y is also important…"): face-saving to avoid "wrong" ratings.
 4. **Em dash**: amplified by raters perceiving em-dash-heavy prose as precise.
@@ -590,7 +590,7 @@ AI's default output is a bulleted list with bold inline headers. Most serious pr
 - **Use bullets** for genuinely enumerable, parallel items (requirements, options, references).
 - **Don't use bullets** as a substitute for paragraphs. If a bullet runs more than two lines, it wanted to be a paragraph.
 - **Never nest bullets three deep** unless writing a reference document with genuine hierarchical structure.
-- **Don't convert "challenges" or "benefits" into bullet lists** in articles. Result: WP:AISIGNS's "Inline-header vertical lists", a strong AI signature.
+- **Don't convert "challenges" or "benefits" into bullet lists** in articles. Result: WP:AISIGNS's "Inline-header vertical lists": strong AI signature.
 
 ### 8.2 Bold restraint
 
@@ -758,7 +758,7 @@ Three failure modes are common when cleaning up AI drafts. Each produces worse o
 
 ### 12.1 Swap-and-pray
 
-Replacing "delve" → "explore," "underscore" → "highlight," "intricate" → "complex." Defeats only the most naive detectors. Underlying voice (cadence, hedging, symmetry, false profundity) is untouched, so readers still notice. *Washington Post* reader quote: *"the mismatch is even worse"* after surface-level edits, because the remaining structure is still AI-shaped, now with mismatched vocabulary.
+Replacing "delve" → "explore," "underscore" → "highlight," "intricate" → "complex." Defeats only the most naive detectors. Underlying voice (cadence, hedging, symmetry, false profundity) is untouched, so readers still notice. *Washington Post* reader quote: *"the mismatch is even worse"* after surface-level edits; remaining structure is still AI-shaped, now with mismatched vocabulary.
 
 ### 12.2 Anti-detector obfuscation
 
@@ -865,11 +865,11 @@ Tell count:
 - Structural: "It's not X — it's Y" (negative parallelism); "In today's … landscape" (opener ban); "Ultimately … testament" (hype close); three-noun tricolons ("tools," "culture," "frameworks"); every sentence within ±15% of same length.
 - Voice: no position, no specific, no named threat, no named tool, no year, no number.
 
-**After (human rewrite, 64 words):**
+**After (rewrite, 69 words):**
 
-> Cybersecurity is a work-culture problem dressed up as a tooling problem. In the 2024 Verizon DBIR, 68% of breaches involved a non-malicious human action: someone who clicked, mis-configured, or re-used a password. No new EDR fixes that. The useful question is which of our processes would have caught the incident, and teams that answer it honestly usually find the weak link in code review.
+> Cybersecurity is a work-culture problem dressed up as a tooling problem. In the 2024 Verizon DBIR, 68% of breaches involved a non-malicious human action: someone who clicked a phishing link, misconfigured a server, or reused a password. No new EDR fixes that. The useful question is which of our processes would have caught the incident, and teams that answer it honestly usually find the weak link in code review.
 
-Same claim-space, different voice: opinionated, specific source (2024 Verizon DBIR), specific percentage (68%), named tool category (EDR), concrete recommendation (code review). Zero Tier-1 vocabulary. No negative parallelism. Sentence lengths: 11, 21, 5, 27 words, CoV 0.53.
+Same claim-space, different voice: opinionated, specific source (2024 Verizon DBIR), specific percentage (68%), named tool category (EDR), concrete recommendation (code review). Zero Tier-1 vocabulary. No negative parallelism. Sentence lengths: 11, 26, 5, 27 words, CoV 0.55.
 
 ### 14.2 Technical README rewrite
 
@@ -937,11 +937,12 @@ Similar length, specific runtime versions, specific protocols, specific provider
 
 ## 16. Meta: this guide against its own rules
 
-A guide that catalogues banned words has to print them, so a raw linter count mostly measures the catalogue. Measured on this revision with `tools/lint_writing_style.py`:
+A guide that catalogues banned words has to print them. A raw linter count therefore mostly measures the catalogue. Run over the whole file on this revision, `tools/lint_writing_style.py` reports 326 hits, and nearly all of them sit where a banned word is the thing being discussed: the word tables, the quoted AI drafts, the §13 checklist, the headings and reference titles that name a pattern, and the word lists of §4.
 
-- **The whole file** reports 326 hits. They sit in the word tables, the quoted AI drafts, the §13 checklist, the headings that name a pattern, the reference titles, and the bold labels and word lists of §4.
-- **The guide's own prose**, measured by linting a copy with those removed (tables, block quotes, headings, §13, §15, quoted phrases and bold labels), has no em dashes, no horizontal rules above headings, and no negative parallelism in the forms §5.1 lists. The last was also checked by reading, because the linter's pattern for it misses the em-dash and "not X, but Y" forms. The remaining lexical hits in that copy are lists of the banned terms themselves: the §4.9 era lists, the §9.1 name list and the §14 tell counts.
-- **Where it misses its own thresholds:** 6 of its 8 enumerations have exactly three items, against a 30% limit; and bold runs at 3.0 per 200 words across the whole file, almost all of it the labels of reference lists.
-- **The seven em dashes that remain** are inside quotations: examples whose subject is the em dash or the pattern it forms (§2 item 6, §5.1, §5.10 rule 3, the §14.1 AI draft and its tell count), a quotation from Freeburg in §5.10, and a source title in §15.
+The fairer test is the guide's own prose. That was measured by linting a copy with the tables, block quotes, headings, quoted phrases and bold labels taken out, along with §13, §15 and this section. The copy has no em dashes and no horizontal rules above headings. It also has no negative parallelism in the forms §5.1 lists, which was checked by reading as well, because the linter's pattern for it misses the em-dash and "not X, but Y" forms. What the linter still finds there is the banned vocabulary itself, listed in §4.9 and §9.1 and counted in §14.
 
-Earlier revisions of this section said the guide passed its own checklist. It did not: it carried 108 em dashes, a horizontal rule above every section, four negative-parallelism constructions of the forms §5.1 lists (one of them in the §14.1 rewrite presented as clean), and citations that did not match their sources. This revision corrects them.
+Two thresholds are still missed. Six of its 8 enumerations have exactly three items, against a 30% limit. Bold runs at 3.0 per 200 words across the whole file, almost all of it in the labels of reference lists.
+
+Seven em dashes remain, all inside quotations. Five are examples whose subject is the em dash or the pattern it forms (§2 item 6, §5.1, §5.10 rule 3, and the §14.1 AI draft with its tell count). The other two are a quotation from Freeburg in §5.10 and a source title in §15.
+
+Earlier revisions of this section said the guide passed its own checklist, while the file carried 108 em dashes, a horizontal rule above every section, four negative-parallelism constructions of the forms §5.1 lists (one of them in the §14.1 rewrite, which was presented as clean) and citations that didn't match their sources. This revision corrects them.
