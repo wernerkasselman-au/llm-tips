@@ -4,13 +4,11 @@ A definitive, evidence-based reference for writing prose, documentation, article
 
 **Scope.** This guide covers English-language writing across four domains where AI tells are most damaging: (1) published prose (articles, blogs, essays, marketing), (2) technical documentation (specs, READMEs, guides), (3) code comments, and (4) commit messages / PR descriptions / issue comments. It applies to writing produced by humans, by LLMs, or by humans editing LLM drafts.
 
-**Principle.** The goal is not to "evade AI detectors." The goal is to write prose that does not exhibit the statistical fingerprints of a model that has been trained to please human raters, because that voice is uniform, risk-averse, information-dense in a noun-heavy way, rhetorically predictable, and devoid of the specific observational grit that makes human writing worth reading.
+**Principle.** The goal is prose free of the statistical fingerprints of a model trained to please human raters, because that voice is uniform, risk-averse, information-dense in a noun-heavy way, rhetorically predictable, and devoid of the specific observational grit that makes human writing worth reading. Evading AI detectors is a side effect at best.
 
-**How to use this guide.** For greenfield writing, internalise §2 and §3, then run §14's checklist before publishing. For AI-assisted drafts, treat every list in §4–§10 as a grep target: ten or more hits per piece means rewrite, not edit. Rewriting from scratch using the AI draft as notes is almost always faster than editing an AI draft sentence by sentence — see §12.2.
+**How to use this guide.** For greenfield writing, internalise §2 and §3, then run §13's checklist before publishing. For AI-assisted drafts, treat every list in §4–§10 as a grep target: ten or more hits per piece means rewrite, not edit. Rewriting from scratch using the AI draft as notes is almost always faster than editing an AI draft sentence by sentence (see §12.4).
 
-**Evidence base.** Every rule in this guide is tied to at least one quantitative source. The core corpus is Reinhart, Brown et al. (*PNAS* 2025, DOI 10.1073/pnas.2422455122), Kobak et al. (*Scientometrics* 2024, arXiv:2406.07016), Juzek & Ward (COLING 2025), Freeburg (arXiv:2603.27006), McGovern et al. (GenAIDetect 2025, aclanthology.org/2025.genaidetect-1.6), Zamaraeva et al. (ACL 2025 Long Papers), the *Washington Post* analysis of 328,744 ChatGPT messages (Merrill, Chen & Kumer, 13 November 2025), Wikipedia:Signs of AI writing (WP:AISIGNS), and Sam Kriss's "Why Does A.I. Write Like… That?" (*NYT Magazine*, 3 December 2025). Full references in §15.
-
----
+**Evidence base.** Every rule in this guide is tied to at least one quantitative source. The core corpus is Reinhart, Brown et al. (*PNAS* 2025, DOI 10.1073/pnas.2422455122), Kobak et al. (*Science Advances* 2025; first preprint arXiv:2406.07016), Juzek & Ward (COLING 2025), Freeburg (arXiv:2603.27006), McGovern et al. (GenAIDetect 2025, aclanthology.org/2025.genaidetect-1.6), Zamaraeva et al. (ACL 2025 Long Papers), the *Washington Post* analysis of 328,744 ChatGPT messages (Merrill, Chen & Kumer, 13 November 2025), Wikipedia:Signs of AI writing (WP:AISIGNS), and Sam Kriss's "Why Does A.I. Write Like… That?" (*NYT Magazine*, 3 December 2025). Full references in §15.
 
 ## 1. Why AI writing sounds the way it does
 
@@ -18,7 +16,7 @@ Surface-level fixes fail because three deep training-pipeline forces converge to
 
 ### 1.1 Pre-training selects formal, markdown-saturated corpora
 
-LLMs are trained disproportionately on high-quality web text: Wikipedia, academic papers, news articles, GitHub READMEs, Stack Exchange. The Pile and RedPajama datasets in widespread use are heavily weighted toward content that either is markdown or was copy-edited by editors applying formal-register style guides. Formal, hedged, noun-heavy English is over-represented; casual conversational registers are systematically under-represented (Freeburg 2026; McGovern et al. 2025). This installs a *latent structural orientation* that later post-training amplifies or suppresses — not a defect, but a distribution.
+LLMs are trained disproportionately on high-quality web text: Wikipedia, academic papers, news articles, GitHub READMEs, Stack Exchange. The Pile and RedPajama datasets in widespread use are heavily weighted toward content that either is markdown or was copy-edited by editors applying formal-register style guides. Formal, hedged, noun-heavy English is over-represented; casual conversational registers are systematically under-represented (Freeburg 2026; McGovern et al. 2025). This installs a *latent structural orientation* that later post-training amplifies or suppresses; it is a property of the training distribution.
 
 ### 1.2 Instruction tuning imposes noun-heavy informational density
 
@@ -40,7 +38,7 @@ Reinhart, Brown et al. constructed parallel corpora of ~12,000 human texts and G
 | Contractions | 63% | 60% | 141% | 139% | 142% | 129% |
 | Hedges ("at about", "almost") | 50% | 63% | 62% | 67% | 89% | 92% |
 
-**Read it.** Llama 3 base models (right two columns) are close to human rates on almost every feature. Instruction tuning pushes them toward the noun-heavy, participle-heavy, low-first-person, low-contraction register seen in GPT-4o. This is not a stylistic bug — it is the signature of a model trained to sound authoritative and thorough.
+**Read it.** Llama 3 base models (right two columns) are close to human rates on almost every feature. Instruction tuning pushes them toward the noun-heavy, participle-heavy, low-first-person, low-contraction register seen in GPT-4o. That register is the signature of a model trained to sound authoritative and thorough.
 
 The authors' specific GPT-4o example: "Bryan, leaning on his agility, dances around the ring, evading Show's heavy blows." Two present participles in one sentence. A human boxing writer would not write that.
 
@@ -52,12 +50,12 @@ Reinforcement Learning from Human Feedback trains a reward model on human rater 
 
 Because chosen completions in rater datasets tend to be longer, more hedged, more "balanced," and more rhetorically polished than rejected ones (rejected answers are typically flat and declarative), the contrastive objective directly installs four tells:
 
-1. The **"It's not X, it's Y"** antithesis is the surface form of contrastive training — it literally repudiates a proximate alternative and proposes the preferred one.
+1. The **"It's not X, it's Y"** antithesis is the surface form of contrastive training: it literally repudiates a proximate alternative and proposes the preferred one.
 2. The **hype register** ("crucial," "pivotal," "transformative," "testament to") is preferred by raters who want answers to "sound smart."
 3. The **both-sides framing** ("While X is true, Y is also important…") is face-saving behaviour that avoids being rated "wrong."
 4. The **em dash** is amplified by raters who perceive em-dash-heavy prose as precise and articulate.
 
-Sam Altman publicly acknowledged that ChatGPT's em-dash frequency has been deliberately tuned in response to user preference (see Freeburg 2026), confirming that RLHF can and does target specific punctuation-level features.
+Freeburg (2026) cites an acknowledgement by Sam Altman that ChatGPT's em-dash frequency was deliberately tuned; the statement that can be checked is Altman's post on X of 14 November 2025, which says ChatGPT now follows a custom instruction not to use em dashes. Either way, post-training can move a single punctuation mark.
 
 Juzek & Ward (COLING 2025) confirmed RLHF's role experimentally by comparing Llama 2-Base to Llama 2-Chat (same architecture, same base weights, differs only in fine-tuning). Llama 2-Chat is "considerably less surprised" (per-word entropy 0.886 vs 1.051) by ChatGPT-generated abstracts containing focal words. This is direct evidence that RLHF, not architecture or pre-training data alone, is what installs the lexical preferences.
 
@@ -67,8 +65,6 @@ Negative instructions ("do not use em dashes," "do not hedge," "write in my voic
 
 What does work: rewriting from scratch, using the AI draft as research. See §12.
 
----
-
 ## 2. What natural human writing looks like
 
 Before listing what to avoid, anchor on what to produce. Twelve characteristics consistently distinguish human prose in the literature (Kobak et al. 2024; Juzek & Ward 2025; Reinhart, Brown et al. 2025; McGovern et al. 2025; Washington Post 2025; WP:AISIGNS).
@@ -76,17 +72,15 @@ Before listing what to avoid, anchor on what to produce. Twelve characteristics 
 1. **Positive burstiness.** Sentence lengths are positively skewed: many short sentences, some medium, occasional long ones. AI output clusters around a bell curve. Metric: coefficient of variation of sentence lengths. AI: typically 0.15–0.25. Human: typically 0.4–0.7 across non-academic registers.
 2. **Unpredictable word choice.** Per-sentence perplexity varies widely. A factual sentence is followed by a metaphor is followed by a fragment. LLM outputs minimise perplexity per step; human writers don't.
 3. **Concrete proper nouns.** Specific people, places, dates, product names, version numbers, error codes. AI defaults to generic placeholders ("a major city," "a leading company," "a marketing team at a mid-sized firm"). Pangram's observation: 60–70% of character names in unprompted ChatGPT/Claude short stories are "Emily" or "Sarah." Kriss documented that asking any AI to write science fiction produces protagonists named "Elara Voss" or "Kael" with uncanny frequency; before 2023 there was not a single self-published book on Amazon using "Elara Voss." By late 2025 there were hundreds.
-4. **Asymmetric allocation of attention.** Important points get more space; minor points get a sentence. AI allocates attention democratically — every subsection is roughly the same length, every item in a list is similar length and parallel grammar.
+4. **Asymmetric allocation of attention.** Important points get more space; minor points get a sentence. AI allocates attention democratically: every subsection is roughly the same length, every item in a list is similar length and parallel grammar.
 5. **Opinions, taken at normal risk.** A position is stated, not balanced. "Whether X or Y" is a red flag; "X, because Y" is human.
 6. **Visible thinking.** False starts, self-correction, mid-sentence pivots, "actually, wait —" moments. Clean first-draft prose reads as machine output.
-7. **Grammatical imperfection.** Sentence fragments. Starting with "And" or "But." Occasional missed preposition. An Oxford comma used inconsistently. Contractions — AI-instruction-tuned Llama uses them at 129–142% of human rate only because its base rate has been trained low (Llama base uses them at near-human rates; GPT-4o uses them at only 60% of human rate).
+7. **Grammatical imperfection.** Sentence fragments. Starting with "And" or "But." Occasional missed preposition. An Oxford comma used inconsistently. Contractions: GPT-4o uses them at 60% of the human rate and GPT-4o Mini at 63%, while Llama 3 base and instruction-tuned models alike use them at 129–142%, so the shortfall comes from how particular models were tuned; instruction tuning alone does not produce it.
 8. **Lexical specificity.** Precise verbs instead of hedged generic ones ("crashes on null input" instead of "handles edge cases poorly").
-9. **Register variation within a piece.** Shifts between formal and conversational, deliberately. Brown et al. demonstrated that instruction-tuned LLMs show limited register variation — they produce the same dense, participle-heavy style whether continuing TV scripts, blog posts, spoken transcripts, or academic articles. Humans adapt.
+9. **Register variation within a piece.** Shifts between formal and conversational, deliberately. Brown et al. demonstrated that instruction-tuned LLMs show limited register variation: they produce the same dense, participle-heavy style whether continuing TV scripts, blog posts, spoken transcripts, or academic articles. Humans adapt.
 10. **Refusal to over-explain.** AI's default is to announce the structure, deliver the content, then summarise it. Humans state things once.
 11. **Specific obscenity and informality.** Brown et al.'s most-underrepresented-words table for GPT-4o includes "fucking" (at 0.0083× human rate), "fuck," "asshole," "shit," "nasty," "ok," "blah," "yep," "i.e." AI does not write how people talk. A single well-placed informal word is a powerful de-AI signal.
 12. **Real named things.** Real people, real companies, real products, real error messages, real dates, real page numbers, real version numbers. AI cannot produce these; it can only produce plausible-looking substitutes.
-
----
 
 ## 3. Core principles
 
@@ -97,9 +91,9 @@ Five principles override every detailed rule in §4–§10. When a rule and a pr
 Every generic noun ("landscape," "ecosystem," "framework," "realm," "dynamic") is an opportunity for a specific one. Every unnamed authority ("experts argue," "studies show," "observers note") is a weasel citation to either name or delete.
 
 > **Before:** "Studies show that AI is transforming the healthcare landscape."
-> **After:** "A 2023 RAND survey of 2,400 US physicians found 38% had used an LLM for a clinical decision in the previous month."
+> **After:** "A survey of 562 physicians at a New York health system, run in November and December 2023, found 21% already used an LLM assistant in their practice (*PLOS One*, 2025)."
 
-Kobak et al. found that 2024 excess vocabulary in PubMed was 66% verbs and 18% adjectives — overwhelmingly style words, not topic words. The excess vocabulary of the Covid pandemic, by contrast, was almost entirely content words (remdesivir, respiratory, omicron). The distinction matters: style words float, content words pin text to specific referents.
+Kobak et al. found that 2024 excess vocabulary in PubMed was 66% verbs and 18% adjectives, overwhelmingly style words. The excess vocabulary of the Covid pandemic, by contrast, was almost entirely content words (remdesivir, respiratory, omicron). The distinction matters: style words float, content words pin text to specific referents.
 
 ### P2. Commitment over balance
 
@@ -114,7 +108,7 @@ Mix sentence lengths deliberately. A twenty-eight-word sentence followed by a th
 
 ### P4. Do the work instead of gesturing at it
 
-When tempted to write "this is a complex, multifaceted issue" — describe the facets. When tempted to write "this is a testament to his enduring legacy" — describe the thing he did. Adjectives of importance ("crucial," "pivotal," "significant") are almost always a failure to show the importance. Wikipedia:AISIGNS catalogues this as "Undue emphasis on significance, legacy, and broader trends" and lists the specific repertoire: "stands as / serves as a testament," "marking a pivotal moment," "a vital / significant / crucial / pivotal key role / moment," "underscores / highlights its importance / significance," "reflects broader," "symbolising its ongoing / enduring / lasting," "contributing to the," "setting the stage for," "marking / shaping the," "represents / marks a shift," "key turning point," "evolving landscape," "focal point," "indelible mark," "deeply rooted."
+When tempted to write "this is a complex, multifaceted issue", describe the facets. When tempted to write "this is a testament to his enduring legacy", describe the thing he did. Adjectives of importance ("crucial," "pivotal," "significant") are almost always a failure to show the importance. Wikipedia:AISIGNS catalogues this as "Undue emphasis on significance, legacy, and broader trends" and lists the specific repertoire: "stands as / serves as a testament," "marking a pivotal moment," "a vital / significant / crucial / pivotal key role / moment," "underscores / highlights its importance / significance," "reflects broader," "symbolising its ongoing / enduring / lasting," "contributing to the," "setting the stage for," "marking / shaping the," "represents / marks a shift," "key turning point," "evolving landscape," "focal point," "indelible mark," "deeply rooted."
 
 ### P5. Write one thing, not the idea of that thing
 
@@ -122,15 +116,13 @@ AI writes to sound plausible; humans write to say something specific. If a sente
 
 Kriss in the *NYT Magazine* gave the definitive example. Asked to write an extremely funny episode of *The Simpsons*, ChatGPT produced a screenplay in which the characters tickled one another in a round: "First Homer tickles Bart, and Bart laughs, and then Bart tickles Lisa, and Lisa laughs, and then Lisa tickles Marge." "Somewhere in its web of associations, the machine had made a connection: Jokes are what make people laugh, tickling makes people laugh, therefore talking about tickling is the equivalent of telling a joke. That was an early model; they don't do this anymore. But the same basic structure governs essentially everything they write." The model is always producing the idea of a joke / the idea of an insight / the idea of a specific example rather than the thing itself.
 
----
-
 ## 4. Banned and restricted vocabulary
 
-These words and phrases are statistically over-represented in LLM output. The bans are not absolute — every word here can appear in legitimate human writing. The rule is density. A single "underscore" in a 2,000-word piece is fine; three is a tell; six is disqualifying. **The piece is the unit of analysis, not the sentence.**
+These words and phrases are statistically over-represented in LLM output. The bans are not absolute: every word here can appear in legitimate human writing. The rule is density. A single "underscore" in a 2,000-word piece is fine; three is a tell; six is disqualifying. **The piece is the unit of analysis, not the sentence.**
 
-### 4.1 The absolute bans — the Juzek–Ward focal words
+### 4.1 The absolute bans: the Juzek–Ward focal words
 
-Juzek & Ward (COLING 2025) identified 21 focal words by a three-step method: (a) the word's per-million frequency in PubMed abstracts rose significantly between 2020 and 2024, (b) the spike had no content explanation, and (c) ChatGPT-3.5 systematically over-uses the word when prompted to write abstracts. These are the 21 words with the highest ratio of ChatGPT usage to human baseline:
+Juzek & Ward (COLING 2025) identified 21 focal words by a three-step method: (a) the word's per-million frequency in PubMed abstracts rose significantly between 2020 and 2024, (b) the spike had no content explanation, and (c) ChatGPT-3.5 systematically over-uses the word when prompted to write abstracts. The table lists 16 of the 21, with each word's ratio of ChatGPT usage to human baseline:
 
 | Word | Ratio (ChatGPT : human) |
 |---|---:|
@@ -153,7 +145,7 @@ Juzek & Ward (COLING 2025) identified 21 focal words by a three-step method: (a)
 
 Every one of these is a tell at normal density. Use with specific justification only.
 
-Kobak et al. (2024) analysed 14 million PubMed abstracts 2010–2024 and found the LLM-induced vocabulary shift was unprecedented: 329 "excess words" in Q1 2024 (i.e., words appearing significantly more than linear extrapolation from 2021–2022 predicts), compared to at most 188 during the peak of the Covid pandemic. Excess ratio (2024 vs 2022 counterfactual): "delves" 25.2×, "showcasing" 9.2×, "underscores" 9.1×. The authors estimate the lower bound on LLM usage among 2024 PubMed abstracts at 10%, with some sub-corpora (e.g., Chinese biomedical authors writing in English) reaching 30%.
+Kobak et al.'s first preprint (2024) analysed 14 million PubMed abstracts from 2010 to early 2024 and found the LLM-induced vocabulary shift was unprecedented: 329 "excess words" in Q1 2024 (i.e., words appearing significantly more than linear extrapolation from 2021–2022 predicts), compared to at most 188 during the peak of the Covid pandemic. Excess ratio (2024 vs 2022 counterfactual): "delves" 25.2×, "showcasing" 9.2×, "underscores" 9.1×. That preprint put the lower bound on LLM usage among 2024 PubMed abstracts at 10%, with some sub-corpora (e.g., Chinese biomedical authors writing in English) reaching 30%; the published version (*Science Advances*, 2025), covering more than 15 million abstracts through the end of 2024, puts it at 13.5%, reaching 40% for some sub-corpora.
 
 ### 4.2 Reinhart/Brown PNAS most-overrepresented words in narrative continuation
 
@@ -165,46 +157,46 @@ Brown et al.'s GPT-4o sample over-uses specific words at the following rates (vs
 | tapestry | 147× | 155× |
 | palpable | 145× | 95× |
 | intricate | 129× | 119× |
-| grapple | 131× | — |
+| grapple | 131× | n/a |
 | fleeting | 124× | 84× |
-| ignite | 122× | — |
-| unspoken | — | 102× |
-| vibrant | 92× | — |
+| ignite | 122× | n/a |
+| unspoken | n/a | 102× |
+| vibrant | 92× | n/a |
 | amidst | 90× | 100× |
-| cacophony | 89× | — |
-| underscore | — | 107× |
-| unravel | — | 83× |
-| solace | — | 95× |
+| cacophony | 89× | n/a |
+| underscore | n/a | 107× |
+| unravel | n/a | 83× |
+| solace | n/a | 95× |
 
 A GPT-4o sample phrase cited in the paper: *"The camaraderie was palpable."* Four words, both items in the 150×+ range. A human writer producing narrative continuation does not write this sentence.
 
-### 4.3 Tier-1 bans — never use without specific reason
+### 4.3 Tier-1 bans: never use without specific reason
 
 The following appear both in the Juzek–Ward focal words, the Brown et al. GPT-4o over-representation list, the Pangram vocabulary list, the jpeggdev/humanize-writing Tier 1 list, and Wikipedia:AISIGNS. Each has become a standalone marker:
 
-- **delve / delves / delving** — Use "look into," "dig into," "examine," or just delete. Post-ChatGPT spike of 2,700% in PubMed abstracts (Kriss 2025, confirmed by Kobak et al. r=25.2).
-- **tapestry** (as metaphor for culture, history, diversity) — Pangram's cross-corpus analysis showed a 25× overrepresentation over Gutenberg baseline. If you literally mean woven cloth, fine.
-- **intricate / intricacies** — 611–772× over human rate in ChatGPT abstracts (Juzek & Ward). Use "detailed," "complicated," or describe the actual details.
-- **vibrant** — 1,260× overrepresentation in ChatGPT samples over Gutenberg baseline.
-- **realm** (as metaphor for "domain," "area") — Use "area," "field," "world." "Realm" is for Tolkien.
-- **testament** ("X is a testament to Y") — Delete; describe what X actually demonstrates.
-- **underscore / underscores / underscoring** (as verb meaning "emphasise") — 390–903× over human rate. Use "shows," "proves," or rewrite so the fact carries its own weight.
-- **showcase / showcases / showcasing** — 422× over human rate in Juzek–Ward. Use "shows," "includes," "features." One of the four persistent post-2025 (GPT-5-era) tells per Wikipedia:AISIGNS.
-- **seamless / seamlessly** — Delete or replace with the specific integration mechanism.
-- **navigate / navigating** (as metaphor for handling) — "Navigate challenges," "navigate the landscape" are pure AI. Say "handle," "manage," or describe the actual steps.
-- **leverage** (as verb meaning "use") — Almost always means "use." Use "use."
-- **boasts** (meaning "has") — 918× over human rate. Replace with "has."
-- **multifaceted / nuanced** — If you believe it, describe the facets / the nuance. Labels without content are hollow.
-- **comprehensive** — Meaningless signifier. Either prove comprehensiveness with scope data or delete.
-- **crucial / pivotal / vital / paramount** — All four are hype adjectives. Replace with the specific consequence or metric. Kobak et al.: "crucial" δ=0.026, i.e. it appears in 2.6 percentage points *more* 2024 abstracts than the counterfactual 2022 projection would predict.
-- **groundbreaking** — 330× over human rate. Rarely true. Delete.
-- **advancements** — 277× over human rate. Use "advances" if you must.
-- **camaraderie / palpable / fleeting / solace / unspoken** — All 80–170× over human rate in GPT-4o narrative continuation (Brown et al.).
-- **grapple / grapples / grappling** — 131× over human rate. Use "handle," "wrestle with."
-- **amidst** — 90–100× over human rate. Use "amid," or restructure.
-- **"signal, not noise" / "signal vs noise" / "signal over noise" / "more signal than noise"** — Banned outright. The phrase is a tech-bro cliché *and* an instance of the §5.1 negative-parallelism pattern in one. Replace with a specific claim about what the disagreement (or data, or whatever) actually carries: "disagreement between the critic and sentinel flags scenario miscategorisation," not "disagreement is signal, not noise." If you cannot say what the signal is, you do not have one to defend.
+- **delve / delves / delving**: Use "look into," "dig into," "examine," or just delete. Post-ChatGPT spike of 2,700% in PubMed abstracts (Kriss 2025); Kobak et al.'s excess ratio for "delves" is 25.2×.
+- **tapestry** (as metaphor for culture, history, diversity): Pangram's cross-corpus analysis showed a 25× overrepresentation over Gutenberg baseline. If you literally mean woven cloth, fine.
+- **intricate / intricacies**: 611–772× over human rate in ChatGPT abstracts (Juzek & Ward). Use "detailed," "complicated," or describe the actual details.
+- **vibrant**: 1,260× overrepresentation in ChatGPT samples over Gutenberg baseline.
+- **realm** (as metaphor for "domain," "area"): Use "area," "field," "world." "Realm" is for Tolkien.
+- **testament** ("X is a testament to Y"): Delete; describe what X actually demonstrates.
+- **underscore / underscores / underscoring** (as verb meaning "emphasise"): 390–903× over human rate. Use "shows," "proves," or rewrite so the fact carries its own weight.
+- **showcase / showcases / showcasing**: 422× over human rate in Juzek–Ward. Use "shows," "includes," "features." One of the four persistent post-2025 (GPT-5-era) tells per Wikipedia:AISIGNS.
+- **seamless / seamlessly**: Delete or replace with the specific integration mechanism.
+- **navigate / navigating** (as metaphor for handling): "Navigate challenges," "navigate the landscape" are pure AI. Say "handle," "manage," or describe the actual steps.
+- **leverage** (as verb meaning "use"): Almost always means "use." Use "use."
+- **boasts** (meaning "has"): 918× over human rate. Replace with "has."
+- **multifaceted / nuanced**: If you believe it, describe the facets / the nuance. Labels without content are hollow.
+- **comprehensive**: Meaningless signifier. Either prove comprehensiveness with scope data or delete.
+- **crucial / pivotal / vital / paramount**: All four are hype adjectives. Replace with the specific consequence or metric. Kobak et al.: "crucial" δ=0.026, i.e. it appears in 2.6 percentage points *more* 2024 abstracts than the counterfactual 2022 projection would predict.
+- **groundbreaking**: 330× over human rate. Rarely true. Delete.
+- **advancements**: 277× over human rate. Use "advances" if you must.
+- **camaraderie / palpable / fleeting / solace / unspoken**: All 80–170× over human rate in GPT-4o narrative continuation (Brown et al.).
+- **grapple / grapples / grappling**: 131× over human rate. Use "handle," "wrestle with."
+- **amidst**: 90–100× over human rate. Use "amid," or restructure.
+- **"signal, not noise" / "signal vs noise" / "signal over noise" / "more signal than noise"**: Banned outright. The phrase is a tech-bro cliché *and* an instance of the §5.1 negative-parallelism pattern in one. Replace with a specific claim about what the disagreement (or data, or whatever) actually carries: "disagreement between the critic and sentinel flags scenario miscategorisation," not "disagreement is signal, not noise." If you cannot say what the signal is, you do not have one to defend.
 
-### 4.4 Restricted (density matters — max one per ~2,000 words)
+### 4.4 Restricted (density matters: max one per ~2,000 words)
 
 Use at most one per ~2,000 words; more than one in combination with any Tier-1 word disqualifies:
 
@@ -212,7 +204,7 @@ additionally, moreover, furthermore, however (as an opener), enhance, foster, fo
 
 ### 4.5 Opener bans
 
-Never open a sentence, paragraph, or section with any of the following — each is on Wikipedia:AISIGNS, the Cherryleaf list, and jpeggdev/humanize-writing:
+Never open a sentence, paragraph, or section with any of the following; each is on Wikipedia:AISIGNS, the Cherryleaf list, and jpeggdev/humanize-writing:
 
 - "In today's fast-paced / ever-evolving / digital / modern / interconnected world…"
 - "In recent years…"
@@ -257,7 +249,7 @@ Never close a section, paragraph, or piece with any of these. In a 2026 SearchEn
 
 ### 4.7 Hedging phrases (delete in almost all cases)
 
-Brown et al.'s Biber-feature table shows LLMs use hedges ("at about," "something like," "almost") at only 50–67% of the human rate — but they use *discursive hedges* (the phrases below) far above human rate. The tell is the specific construction, not hedging itself.
+Brown et al.'s Biber-feature table shows LLMs use hedges ("at about," "something like," "almost") at only 50–67% of the human rate, but they use *discursive hedges* (the phrases below) far above human rate. The tell is the specific construction, not hedging itself.
 
 - "It's important to note / mention / understand that…"
 - "It's worth mentioning / considering that…"
@@ -327,13 +319,11 @@ Verbose filler resolves to one of: a simpler conjunction, the bare verb, or dele
 
 Source: Humanizer kit (Berman 2026); WP:AISIGNS hedge inventory.
 
----
-
 ## 5. Banned syntactic and structural patterns
 
-Lexical cleanup alone is insufficient. Sam Kriss's *New York Times Magazine* analysis ("Why Does A.I. Write Like… That?", 3 December 2025) argued — correctly — that structure is a deeper tell than vocabulary. Once the vocabulary is cleaned, readers still sense AI because the **shapes** of sentences and paragraphs are wrong.
+Lexical cleanup alone is insufficient. Sam Kriss's *New York Times Magazine* analysis ("Why Does A.I. Write Like… That?", 3 December 2025) argued, correctly, that structure is a deeper tell than vocabulary. Once the vocabulary is cleaned, readers still sense AI because the **shapes** of sentences and paragraphs are wrong.
 
-### 5.1 Negative parallelism — "It's not X, it's Y" and "Not just X, but Y"
+### 5.1 Negative parallelism: "It's not X, it's Y" and "Not just X, but Y"
 
 The single most recognisable AI structure. Classical rhetoric calls it antithesis or negative-positive parallelism. In human writing it is a high-impact device used sparingly for emphasis. In LLM output it appears at densities no human writer produces.
 
@@ -352,7 +342,7 @@ The single most recognisable AI structure. Classical rhetoric calls it antithesi
 
 **Fix.** Say only the positive. "It's Y" carries more force than "It's not X; it's Y" in nine cases out of ten.
 
-### 5.2 The tricolon reflex — rule of three
+### 5.2 The tricolon reflex: rule of three
 
 LLMs group ideas in threes compulsively: three-item lists, three adjectives, three parallel clauses. Humans use threes too, but at roughly a third of the AI rate (LinkedIn analysis by Massobrio, "Triviality and Rhetorical Triplets," 2025). The tell is frequency, not any single tricolon.
 
@@ -373,11 +363,11 @@ A specific and corrosive AI pattern: a conclusion that presents "the good news,"
 
 **Rule.** End with one strong statement, not a balanced assessment. If the evidence points one way, the conclusion points one way.
 
-### 5.4 Avoidance of basic copulas — "serves as" / "stands as" / "represents" / "marks"
+### 5.4 Avoidance of basic copulas: "serves as" / "stands as" / "represents" / "marks"
 
 LLM-generated text systematically replaces "is"/"are" with "serves as," "stands as," "marks," "represents," "features," "boasts," "offers," "maintains." One study documented an **over 10% decrease in the usage of the words "is" and "are" in academic writing in 2023 alone**, with no prior trend (cited in WP:AISIGNS). The same pattern appears in AI copyedits: asked to "revise," GPT systematically hollows out copulas.
 
-The Brown et al. Biber table confirms this at feature level: LLMs use "be" as main verb at 61–63% (GPT-4o) and 100–108% (Llama Instruct) of human rate. The compensation is in nominal constructions — "serves as X," "stands as X," "boasts a Y," "features a Z."
+The Brown et al. Biber table confirms this at feature level: LLMs use "be" as main verb at 61–63% (GPT-4o) and 100–108% (Llama Instruct) of human rate. The compensation is in nominal constructions: "serves as X," "stands as X," "boasts a Y," "features a Z."
 
 **Rule.** Default to "is." Reach for "serves as" only when the subject genuinely performs a function ("the valve serves as a pressure relief").
 
@@ -408,9 +398,9 @@ AI writes like a bad TED talk: tells you what it's going to say, says it, then t
 
 ### 5.8 "Elegant variation" / pronominal gymnastics
 
-LLMs have repetition-penalty decoding and explicit training to avoid reusing a word, which produces the classic Fleet Street "popular orange vegetable" phenomenon — after calling someone by name, every subsequent reference cycles through "the actor," "the star," "the 45-year-old," "the Academy Award nominee."
+LLMs have repetition-penalty decoding and explicit training to avoid reusing a word, which produces the classic Fleet Street "popular orange vegetable" phenomenon: after calling someone by name, every subsequent reference cycles through "the actor," "the star," "the 45-year-old," "the Academy Award nominee."
 
-**Rule.** Reuse names. Reuse "the company," "the function," "the user" where they are the clearest referent. Variation for variation's sake is an AI tell. (*The Guardian* style team has mocked this for decades under the "POV — popular orange vegetable" name; an LLM is simply doing it as a system default.)
+**Rule.** Reuse names. Reuse "the company," "the function," "the user" where they are the clearest referent. Variation for variation's sake is an AI tell. (*The Guardian* style team has mocked this for decades under the "popular orange vegetable" (POV) name; an LLM is simply doing it as a system default.)
 
 ### 5.9 Paragraph uniformity
 
@@ -418,7 +408,7 @@ AI paragraphs cluster around a narrow length band (typically 60–90 words). Hum
 
 **Rule.** Never write a piece where every paragraph is within ±20% of the same length. Never write a piece where every section gets roughly equal wordcount.
 
-### 5.10 Em dashes — the markdown fingerprint
+### 5.10 Em dashes: the markdown fingerprint
 
 Em-dash overuse is real but derivative. Freeburg (2026) showed em dashes are "markdown leaking into prose — the smallest surviving unit of structural formatting when headers, bullets, and bold are suppressed." Humans have used em dashes for centuries; the test is function and frequency.
 
@@ -428,16 +418,16 @@ Em-dash overuse is real but derivative. Freeburg (2026) showed em dashes are "ma
 |---|---:|---:|---:|
 | GPT-4.1 | 10.62 | 9.10 | 3.86 |
 | Claude Opus 4.6 | 9.09 | 0.19 | 0.00 |
-| Claude Sonnet 4 | 8.29 | 1.31 | — |
-| Claude Haiku 3.5 | 7.51 | 0.18 | — |
+| Claude Sonnet 4 | 8.29 | 1.31 | n/a |
+| Claude Haiku 3.5 | 7.51 | 0.18 | n/a |
 | DeepSeek V3 | 6.95 | 5.41 | 1.57 |
-| GPT-4o Mini | 4.16 | 4.23 | — |
-| GPT-4o | 4.12 | 2.68 | — |
-| Gemini 2.5 Pro | 3.53 | 0.00 | — |
+| GPT-4o Mini | 4.16 | 4.23 | n/a |
+| GPT-4o | 4.12 | 2.68 | n/a |
+| Gemini 2.5 Pro | 3.53 | 0.00 | n/a |
 | GPT-5.4 | 1.43 | 0.29 | 0.00 |
-| Gemini 2.5 Flash | 1.28 | 1.48 | — |
-| Llama 3.1 8B Instruct | 0.00 | 0.00 | — |
-| Llama 3.3 70B Instruct | 0.00 | 0.00 | — |
+| Gemini 2.5 Flash | 1.28 | 1.48 | n/a |
+| Llama 3.1 8B Instruct | 0.00 | 0.00 | n/a |
+| Llama 3.3 70B Instruct | 0.00 | 0.00 | n/a |
 | **Human baseline (8 published essays, 57,232 words)** | **3.23 (mean, range 0.33–17.12)** |
 
 Read it. GPT-4.1 produces em dashes at 3.3× the human mean and resists suppression even under explicit prohibition. Claude Opus 4.6 is high unconstrained but *complies perfectly* under suppression. Llama produces zero. GPT-5.4 has been actively reduced.
@@ -461,29 +451,27 @@ ChatGPT and DeepSeek output curly quotes ("curly") and curly apostrophes (it's).
 
 ### 5.13 Formal syntactic divergences (HPSG-level)
 
-Zamaraeva et al. (ACL 2025 Long Papers) compared NYT-style human writing to six LLMs using Head-driven Phrase Structure Grammar. They found systematic differences in constituency length, dependency distances, and variety of syntactic constructions — LLMs produce longer constituents and less variety. At the grammar-type level, LLM text is more templatic: repeated use of similar clausal openings ("It is important to note that…", "In order to…") and recurrent coordination patterns. The reliability of these signals increases at longer text lengths.
+Zamaraeva et al. (ACL 2025 Long Papers) compared NYT-style human writing to six LLMs using Head-driven Phrase Structure Grammar. They found systematic differences in constituency length, dependency distances, and variety of syntactic constructions: LLMs produce longer constituents and less variety. At the grammar-type level, LLM text is more templatic: repeated use of similar clausal openings ("It is important to note that…", "In order to…") and recurrent coordination patterns. The reliability of these signals increases at longer text lengths.
 
 **Operational implication.** If you find that the first 5–8 words of every paragraph follow a similar syntactic template, the piece is AI-shaped even if every word is human-replaced.
 
 ### 5.14 Performed authenticity (second-generation tells)
 
-When models are prompted to "sound human" they overshoot, producing a new family of tells. These are subtler than classic AI vocabulary because they *perform* the very signals — informality, opinion — that mark human writing, but mechanically. Catalogued by the Humanizer kit (Berman 2026, patterns 25–28) as "performed authenticity."
+When models are prompted to "sound human" they overshoot, producing a new family of tells. These are subtler than classic AI vocabulary because they *perform* the very signals that mark human writing (informality, opinion), but mechanically. Catalogued by the Humanizer kit (Berman 2026, patterns 25–28) as "performed authenticity."
 
 **Sub-patterns.**
 
-1. **Philosophical mic drops** — "Maybe both." / "And honestly?" / "Maybe that's the point." / "I think that says something." / "If that's not [noun], I don't know what is." / "Which is either … or …" End-of-paragraph reflection that gestures at depth without adding any. A shrug performing thoughtfulness.
+1. **Philosophical mic drops**: "Maybe both." / "And honestly?" / "Maybe that's the point." / "I think that says something." / "If that's not [noun], I don't know what is." / "Which is either … or …" End-of-paragraph reflection that gestures at depth without adding any. A shrug performing thoughtfulness.
 
-2. **Performed balanced contrasts** — "[X] but not [Y]." / "Simple enough to use, powerful enough to matter." / "Take the work seriously but not yourself." Sentence-level cousin of §6.6 both-sides framing. Real human contrasts are lopsided; the perfectly weighted form is AI.
+2. **Performed balanced contrasts**: "[X] but not [Y]." / "Simple enough to use, powerful enough to matter." / "Take the work seriously but not yourself." Sentence-level cousin of §6.6 both-sides framing. Real human contrasts are lopsided; the perfectly weighted form is AI.
 
-3. **Brand-manifesto structure** — Each paragraph labels cleanly with a single word (Identity / Function / Values / Reflection / Mission). Reads as if drafted from a creative brief. Real writing leads with whatever's most interesting and lets details surface.
+3. **Brand-manifesto structure**: Each paragraph labels cleanly with a single word (Identity / Function / Values / Reflection / Mission). Reads as if drafted from a creative brief. Real writing leads with whatever's most interesting and lets details surface.
 
-4. **Parenthetical personality injection** — "(and honestly?)" / "(not that I'm complaining)" / "(if that makes sense)" / "(or something like that)" / "(maybe that's the point)" Mid-sentence asides that decorate rather than disrupt. Real asides break the sentence; these soften authority.
+4. **Parenthetical personality injection**: "(and honestly?)" / "(not that I'm complaining)" / "(if that makes sense)" / "(or something like that)" / "(maybe that's the point)" Mid-sentence asides that decorate rather than disrupt. Real asides break the sentence; these soften authority.
 
-**Why this category.** §4 and §5.1–§5.13 catalogue first-generation tells — what the model produces by default. These four are second-generation: surface moves the model produces specifically when prompted to "sound human" or "add personality." Cleaning a first-generation tell often produces a second-generation one in its place. Expect more as RLHF further fine-tunes for "naturalness."
+**Why this category.** §4 and §5.1–§5.13 catalogue first-generation tells: what the model produces by default. These four are second-generation: surface moves the model produces specifically when prompted to "sound human" or "add personality." Cleaning a first-generation tell often produces a second-generation one in its place. Expect more as RLHF further fine-tunes for "naturalness."
 
-**Rule.** Strip every philosophical mic drop without replacement. Don't soften authority with parenthetical asides — say it directly or cut the sentence. If your paragraph structure could be labelled with one-word themes, restructure.
-
----
+**Rule.** Strip every philosophical mic drop without replacement. Don't soften authority with parenthetical asides; say it directly or cut the sentence. If your paragraph structure could be labelled with one-word themes, restructure.
 
 ## 6. Rhetorical bans
 
@@ -510,9 +498,9 @@ AI generates concrete-sounding examples that are actually generic: *"Consider a 
 
 ### 6.3 Fake anecdotes and fabricated authority
 
-- "I spoke with dozens of engineers…" — if you didn't, don't say it.
-- "I've been doing this for years…" — if written by an LLM, this is a lie.
-- "In my experience…" followed by generic advice — a tell.
+- "I spoke with dozens of engineers…": if you didn't, don't say it.
+- "I've been doing this for years…": if written by an LLM, this is a lie.
+- "In my experience…" followed by generic advice is a tell.
 - Fabricated quotes attributed to real people.
 - Fabricated citations with plausible-looking DOIs that resolve to unrelated papers (WP:AISIGNS catalogues this specifically: LLMs generate references to non-existent papers with DOIs that do exist but lead to unrelated articles).
 
@@ -556,13 +544,11 @@ AI writing flatters the reader. Every idea in a list is "excellent," "powerful,"
 
 **Rule.** Use "from X to Y" only when X and Y are real extremes of an ordered set (dates, sizes, levels, prices). Otherwise list the items plainly: "The book covers the Big Bang, star formation, and current theories about dark matter." Source: Humanizer kit pattern #12 (Berman 2026).
 
----
-
 ## 7. Tone rules
 
 ### 7.1 Commit to a voice
 
-AI default voice: formal, neutral, courteous, risk-averse. If that is your house voice (legal, medical, regulatory), this section does not apply — but also, your AI tells will be harder to eliminate because they overlap with your house style, and you'll need to lean harder on §4–§6.
+AI default voice: formal, neutral, courteous, risk-averse. If that is your house voice (legal, medical, regulatory), this section does not apply, but your AI tells will be harder to eliminate because they overlap with your house style, and you'll need to lean harder on §4–§6.
 
 For everything else: pick a voice with edges. Conversational and informed. Opinionated and specific. Technical and dry. Sardonic and precise. Any committed voice beats the AI courtesy voice.
 
@@ -594,8 +580,6 @@ Brown et al.'s most-underrepresented-words table for GPT-4o includes (at rates 0
 
 A formal sentence followed by "but honestly, that's insane" is human. A formal paragraph followed by a casual one is human. Brown et al. demonstrated instruction-tuned LLMs show limited register variation. Humans adapt; shift register when the subject matter turns.
 
----
-
 ## 8. Formatting rules
 
 ### 8.1 Bullet discipline
@@ -605,17 +589,17 @@ AI's default output format is a bulleted list with bold inline headers. Most ser
 - **Use bullets** for genuinely enumerable, parallel items (lists of requirements, lists of options, lists of references).
 - **Do not use bullets** as a substitute for writing paragraphs. If an item in a bullet list is more than two lines of prose, it wanted to be a paragraph.
 - **Never nest bullets three deep** unless you are writing a reference document with genuine hierarchical structure.
-- **Do not convert "challenges" or "benefits" into bullet lists** in articles. The resulting structure is Wikipedia:AISIGNS's "Inline-header vertical lists" pattern — a strong AI signature.
+- **Do not convert "challenges" or "benefits" into bullet lists** in articles. The resulting structure is Wikipedia:AISIGNS's "Inline-header vertical lists" pattern, a strong AI signature.
 
 ### 8.2 Bold restraint
 
-The "every third word is bold" pattern is a direct import from marketing copy, slide decks, and how-to listicles — all heavily represented in training data. Wikipedia:AISIGNS notes "AI chatbots may display various phrases in boldface for emphasis in an excessive, mechanical manner" and gives real Wikipedia draft examples where entire narrative paragraphs were dotted with bold.
+The "every third word is bold" pattern is a direct import from marketing copy, slide decks, and how-to listicles, all heavily represented in training data. Wikipedia:AISIGNS notes "AI chatbots may display various phrases in boldface for emphasis in an excessive, mechanical manner" and gives real Wikipedia draft examples where entire narrative paragraphs were dotted with bold.
 
 **Rule.** In body prose, use bold at most once per section and only for genuine emphasis on a load-bearing term. If you want something to stand out, write a sentence that stands out.
 
 ### 8.3 Emoji
 
-Professional technical writing, long-form journalism, and most documentation do not contain emoji. 🚀 ✨ 💡 as section decorators or headline enhancers are AI fingerprints. The *Washington Post* 328,744-message analysis found ChatGPT "leans heavily on emojis" as one of its three strongest lexical tells. If your brand voice uses emoji deliberately, fine — but never auto-accept what an LLM produces.
+Professional technical writing, long-form journalism, and most documentation do not contain emoji. 🚀 ✨ 💡 as section decorators or headline enhancers are AI fingerprints. The *Washington Post* 328,744-message analysis found ChatGPT "leans heavily on emojis" as one of its three strongest lexical tells. If your brand voice uses emoji deliberately, fine, but never auto-accept what an LLM produces.
 
 In open-source project READMEs specifically, `## Features ✨` is a near-certain AI signature (see §9.2).
 
@@ -647,8 +631,6 @@ Wikipedia:AISIGNS catalogues model-specific markup bugs that end up in the text 
 
 Running `grep -E 'turn0|oaicite|oai_citation|utm_source=(openai|chatgpt|copilot)|access-date=.{4}-XX-XX'` on any suspect document catches most of these in one pass.
 
----
-
 ## 9. Domain-specific guidance
 
 ### 9.1 Articles, essays, blog posts
@@ -657,7 +639,7 @@ The tells in §4 and §5 are most damaging here because readers actively assess 
 
 - **Intros must commit immediately.** Drop the scene-setting paragraph. The first sentence should already be doing work.
 - **No TL;DR at the top unless your publication demands it.** AI defaults to summary-first structure; leading journalism leads with the lede, not the recap.
-- **Include at least one moment of observational specificity** — something you saw, something you measured, something you remember. AI cannot produce these. Human pieces without them read as AI-adjacent even when they aren't. Brown et al. found GPT-4o uses rare, specific proper nouns like "Deborah" or actual place names at a small fraction of human rates.
+- **Include at least one moment of observational specificity**: something you saw, something you measured, something you remember. AI cannot produce these. Human pieces without them read as AI-adjacent even when they aren't. Brown et al. found GPT-4o uses rare, specific proper nouns like "Deborah" or actual place names at a small fraction of human rates.
 - **Cite real sources with page numbers or URLs.** AI-hallucinated citations are the most reputationally destructive tell; the NYT / Alex Preston / *Guardian* incident (March 2026) is the canonical warning. Journalism institutions are now actively detecting, with *The Globe and Mail* (April 2026 standards-editor column) noting that contributors to Opinion, First Person, and Lives Lived must attest their work is "original and created without the use of artificial intelligence."
 - **No Elara Voss.** If your piece contains a fictional character, make sure the name does not match the ChatGPT-era canonical set: Elara, Elena, Kael, Sarah, Emily, and variations. Pangram's measurement: 60–70% of character names in unprompted ChatGPT/Claude short fiction are "Emily" or "Sarah." Kriss found the same for SF protagonists.
 - **Write one opinion, not a survey of opinions.** Cherryleaf: "Real writers pick a position and defend it. AI always presents both sides."
@@ -671,7 +653,7 @@ Documentation has its own AI-tell profile because many detection heuristics fals
 - **Version specificity.** Real docs say `python>=3.11` and `node 20.11.1` and `webpack 5.92.0+`. AI docs say "ensure you have Python installed."
 - **Error messages quoted verbatim.** AI rarely produces real error strings; when it does, they are often slightly wrong. Copy-paste real ones.
 - **No emoji in section headings** (`## Features ✨` is a near-certain AI signature for professional technical documentation per Mohamed Abdullah's 2025 analysis).
-- **No marketing copy in technical docs.** "Seamlessly integrate," "empower developers," "revolutionise your workflow" — none of these belong in a README.
+- **No marketing copy in technical docs.** "Seamlessly integrate," "empower developers," "revolutionise your workflow": none of these belong in a README.
 - **No three-line horizontal rules (`---` or `***`) separating every section.** This is markdown leaking (Freeburg 2026).
 
 ### 9.3 Code comments
@@ -696,15 +678,15 @@ Human developers under-comment. AI over-comments. The ratio is the tell. Codequi
 - Decorative divider banners (`// =========== USER MANAGEMENT ============`).
 - Emoji in code comments outside projects that use them deliberately.
 - "TODO: implement later" on code you could implement now.
-- "This handles all edge cases" — AI over-claims; humans say "handles null and negative n; check for NaN separately."
+- "This handles all edge cases": AI over-claims; humans say "handles null and negative n; check for NaN separately."
 - Generic over-engineered edge case handling that doesn't match the assignment scope. Student solving "reverse a string" does not proactively handle multi-byte Unicode grapheme clusters; an LLM does.
 - Perfect symmetry of error handling across every function, including where none is needed. AI adds try/catch everywhere; humans add it where they've seen it fail.
 
 **Keep:**
 
-- WHY comments. The non-obvious reason the code is the way it is — a workaround for a specific bug, a hidden invariant, a constraint from an external system.
+- WHY comments. The non-obvious reason the code is the way it is: a workaround for a specific bug, a hidden invariant, a constraint from an external system.
 - Version / environment qualifiers (`// only works on node >= 20 because of structuredClone behaviour`).
-- Warnings about footguns (`// DO NOT reorder — the auth call must happen before the session write or we leak`).
+- Warnings about footguns (`// DO NOT reorder: the auth call must happen before the session write or we leak`).
 - Specific error-code references (`// returns EAGAIN if the ring buffer is saturated; retry with backoff`).
 
 A good rule of thumb: if deleting the comment would leave no reader of the code confused, delete it.
@@ -732,13 +714,11 @@ CHAOSS Project data from 2024: AI-generated OSS comments rose from 0.9% (Q1 2023
 
 - **Documentation Mirror:** Comments that regurgitate official docs verbatim but omit documented caveats.
 - **Solution-First, Constraint-Agnostic:** Proposing elegant code fixes without referencing actual error logs, environment versions, or project-specific constraints.
-- **Consensus Vacuum:** "most developers agree," "it is widely accepted," "best practices suggest" — appeals to unnamed authority.
+- **Consensus Vacuum:** "most developers agree," "it is widely accepted," "best practices suggest", which appeal to unnamed authority.
 - **Absence of versioned specificity:** No `python --version`, no exact error strings, no stack traces.
 - **Missing "why not X?" reasoning:** Human proposals weigh alternatives; AI proposals don't.
 
 If you are participating in OSS discussion: cite exact versions, paste exact error messages, show actual output. The signals are the absence of signals.
-
----
 
 ## 10. Detection methods: what they actually measure
 
@@ -754,26 +734,22 @@ Understanding what classifiers look at tells you what to neutralise in your own 
 
 **Why single-metric detectors (GPTZero, ZeroGPT, QuillBot) produce false positives.** A 2023 Stanford study flagged 61% of non-native-English TOEFL essays as AI. Non-native writers produce lower-perplexity text because they avoid unusual constructions; single-threshold perplexity detectors collapse the axes "non-standard word choice" and "AI-generated." *The Globe and Mail* (April 2026): three different AI detectors on the same NYT "Modern Love" column returned three different verdicts.
 
-**Operational implication.** Multi-feature, domain-calibrated ensembles are the state of the art. If your piece is clean against vocabulary, structure, perplexity, burstiness, and POS-n-gram profile simultaneously, no current detector will flag it. The §14 checklist is built against this multi-signal profile.
-
----
+**Operational implication.** Multi-feature, domain-calibrated ensembles are the state of the art. If your piece is clean against vocabulary, structure, perplexity, burstiness, and POS-n-gram profile simultaneously, no current detector will flag it. The §13 checklist is built against this multi-signal profile.
 
 ## 11. Evolution: what has changed 2023 → 2026
 
 Signals matter only to the extent models still produce them. The research catalogues specific shifts:
 
 - **"Delve" is in sharp decline.** Peaked 2023–early 2024; dropped off in 2025 after widespread mockery and (reportedly) internal fine-tuning adjustments. Remaining usage is still high vs. pre-2022 baseline, but "delve" alone is no longer proof.
-- **Em-dash overuse has been partially suppressed** in GPT-5.1 / GPT-5.4 (November 2025 onward) after OpenAI acknowledged the issue. Sam Altman's Threads post confirmed the behaviour was adjusted in response to user preference. Absence no longer rules out AI.
+- **Em-dash overuse has been partially suppressed** in GPT-5.1 and GPT-5.4 (November 2025 onward). Sam Altman's post on X of 14 November 2025 said ChatGPT now follows a custom instruction not to use em dashes, and Freeburg measured GPT-5.4 at 1.43 per 1,000 words unconstrained. Absence no longer rules out AI.
 - **"It's not X, it's Y"** has increased and is now the strongest structural tell (Washington Post, November 2025). 6% of July 2025 ChatGPT messages contain "not just X, but Y" variations.
 - **"Showcase," "emphasising," "enhance," "highlighting"** are the persistent GPT-5-era vocabulary tells (Wikipedia:AISIGNS 2025/2026).
-- **"Undue emphasis on notability, attribution, and media coverage"** is a newer pattern characteristic of newer models with retrieval — they list the sources the subject has been covered in rather than summarising what the sources said. Canonical phrase: "has been profiled in major outlets including…" "maintains an active social media presence" (uncommon on Wikipedia before ~2024).
+- **"Undue emphasis on notability, attribution, and media coverage"** is a newer pattern characteristic of newer models with retrieval: they list the sources the subject has been covered in rather than summarising what the sources said. Canonical phrase: "has been profiled in major outlets including…" "maintains an active social media presence" (uncommon on Wikipedia before ~2024).
 - **Diffusion-based text models** (LLaDA family; arXiv:2507.10475) produce perplexity matching human baseline (44.62 vs 43.03), so perplexity-based detectors increasingly fail on them. Burstiness remains lower. Structural tells remain.
 - **Obvious hallucinations and incoherence** (2022–early 2023 tells) have mostly disappeared as models improved.
 - **Model-attribution fingerprints remain.** McGovern et al. (2025) showed that even GPT-4 and Cohere data can be distinguished from human and from each other at F1 > 0.94 using simple n-gram features; the fingerprint persists across model generations.
 
 **Operational implication.** A clean piece today is a piece with ≤1 of the top-20 markers. Three years ago a clean piece could tolerate five.
-
----
 
 ## 12. Anti-patterns in "humanising" AI text
 
@@ -785,7 +761,7 @@ Replacing "delve" → "explore," "underscore" → "highlight," "intricate" → "
 
 ### 12.2 Anti-detector obfuscation
 
-Adding intentional typos, forced fragments, random "And"s. This produces prose that reads as badly edited, which is worse than AI — AI at least reads as competent. The goal is good human writing, not corrupted AI. The Pangram research on humanizer tools (DUPE / paraphrasing attacks; arXiv:2404.11408) shows this approach defeats detectors temporarily while producing text that human readers find obviously worse than either AI or human originals.
+Adding intentional typos, forced fragments, random "And"s. This produces prose that reads as badly edited, which is worse than AI, because AI at least reads as competent. The goal is good human writing. The Pangram research on humanizer tools (DUPE / paraphrasing attacks; arXiv:2404.11408) shows this approach defeats detectors temporarily while producing text that human readers find obviously worse than either AI or human originals.
 
 ### 12.3 Heavy prompt engineering
 
@@ -793,7 +769,7 @@ Adding intentional typos, forced fragments, random "And"s. This produces prose t
 
 ### 12.4 What actually works
 
-Rewriting, not editing. Take the AI draft as research — a set of claims, facts, and a rough outline — and write the final version from a blank editor. It is faster than editing a draft sentence by sentence and produces better output.
+Rewriting, not editing. Take the AI draft as research (a set of claims, facts, and a rough outline) and write the final version from a blank editor. It is faster than editing a draft sentence by sentence and produces better output.
 
 For AI-assisted drafts where rewriting isn't practical:
 1. Delete every Tier-1 vocabulary word (§4.3). No replacement; usually the sentence is better without.
@@ -804,8 +780,6 @@ For AI-assisted drafts where rewriting isn't practical:
 6. Add at least one observational specific (§2 item 12, §9.1).
 7. Take a position (§3 P2).
 8. Re-read aloud. Fix any sentence that doesn't sound like you saying it.
-
----
 
 ## 13. Pre-publish checklist
 
@@ -822,7 +796,7 @@ Run every piece through this before shipping. A piece scoring 3 or more "hits" s
 - [ ] foster(ing), harness(ing), embark (more than 1 combined → rewrite)
 - [ ] crucial, pivotal, vital, paramount, multifaceted, nuanced, comprehensive (more than 2 combined → rewrite)
 - [ ] camaraderie, palpable, fleeting, solace, unspoken, grapple, amidst, cacophony (any → rewrite in fiction; if nonfiction, near-certain AI)
-- [ ] "signal, not noise" / "signal vs noise" / "signal over noise" / "more signal than noise" (any hit → rewrite — banned outright per §4.3)
+- [ ] "signal, not noise" / "signal vs noise" / "signal over noise" / "more signal than noise" (any hit → rewrite; banned outright per §4.3)
 
 ### Opener / closer scan:
 
@@ -876,13 +850,11 @@ Run: `grep -E 'turn0|oaicite|oai_citation|utm_source=(openai|chatgpt|copilot)|ac
 - [ ] Every DOI resolves to the paper you cited, not an unrelated one.
 - [ ] Every book citation has a page number or a verifiable URL.
 
----
-
 ## 14. Two worked before/afters
 
 ### 14.1 Marketing-register rewrite
 
-**Before (AI draft, 76 words):**
+**Before (AI draft, 86 words):**
 
 > In today's rapidly evolving digital landscape, cybersecurity has emerged as a crucial concern for organizations of all sizes. As we navigate the complexities of modern threat vectors, it's important to note that a multifaceted approach is paramount. This isn't just about implementing tools — it's about fostering a culture of security. By leveraging comprehensive frameworks, organizations can seamlessly integrate robust defences that showcase their commitment to protecting stakeholders. Ultimately, the journey toward security resilience is a testament to the enduring importance of vigilance in our interconnected world.
 
@@ -891,15 +863,15 @@ Tell count:
 - Structural: "It's not X — it's Y" (negative parallelism); "In today's … landscape" (opener ban); "Ultimately … testament" (hype close); three-noun tricolons ("tools," "culture," "frameworks"); every sentence within ±15% of the same length.
 - Voice: no position, no specific, no named threat, no named tool, no year, no number.
 
-**After (human rewrite, same word count):**
+**After (rewrite, 69 words):**
 
-> Cybersecurity is a work-culture problem dressed up as a tooling problem. In the 2024 Verizon DBIR, 68% of breaches involved a non-malicious human action — someone who clicked, mis-configured, or re-used a password. You cannot buy your way out of that with a new EDR. The useful question is not "which tool?" but "which of our processes would have caught this incident?" When teams answer that question honestly, they usually discover their weakest link is code review, not the firewall.
+> Cybersecurity is a work-culture problem dressed up as a tooling problem. In the 2024 Verizon DBIR, 68% of breaches involved a non-malicious human action: someone who clicked a phishing link, misconfigured a server, or reused a password. No new EDR fixes that. The useful question is which of our processes would have caught the incident, and teams that answer it honestly usually find the weak link in code review.
 
-Same claim-space, different voice: opinionated, specific source (2024 Verizon DBIR), specific percentage (68%), named tool category (EDR), concrete recommendation (code review). Zero Tier-1 vocabulary. No negative parallelism. Sentence lengths: 12, 27, 9, 18, 17 words — coefficient of variation ~0.4.
+Same claim-space, different voice: opinionated, specific source (2024 Verizon DBIR), specific percentage (68%), named tool category (EDR), concrete recommendation (code review). Zero Tier-1 vocabulary. No negative parallelism. Sentence lengths: 11, 26, 5, 27 words, coefficient of variation 0.55.
 
 ### 14.2 Technical README rewrite
 
-**Before (AI draft, 68 words):**
+**Before (AI draft, 55 words of body text):**
 
 > ## Overview ✨
 >
@@ -907,15 +879,13 @@ Same claim-space, different voice: opinionated, specific source (2024 Verizon DB
 
 Tells: emoji in heading (§8.3), every Tier-1 marketing word (robust, cutting-edge, empowers, seamlessly, leveraging, industry-leading, best practices, comprehensive, end-to-end, showcases, enterprise-grade, fostering, superior, streamlines, intuitive), "Whether you're a … or a …" opener ban, no specific API name, no version, no examples.
 
-**After (human rewrite, same word count):**
+**After (human rewrite, 64 words of body text):**
 
 > ## What AuthKit is
 >
-> AuthKit is a drop-in authentication library for Node.js (≥20) and Deno. It wraps OAuth2, OIDC, and WebAuthn behind one API and ships tested clients for Google, GitHub, Okta, and Microsoft Entra. Use it when you want short-lived JWTs with refresh-token rotation, rate-limited login endpoints, and audit-ready logs on day one. Not recommended if you need SAML — the protocol is deliberately excluded; see [saml-kit](#) for that.
+> AuthKit is a drop-in authentication library for Node.js (≥20) and Deno. It wraps OAuth2, OIDC, and WebAuthn behind one API and ships tested clients for Google, GitHub, Okta, and Microsoft Entra. Use it when you want short-lived JWTs with refresh-token rotation, rate-limited login endpoints, and audit-ready logs on day one. Not recommended if you need SAML, which is deliberately excluded; see [saml-kit](#) for that.
 
-Same word count, specific runtime versions, specific protocols, specific providers, specific features named, specific non-feature named with a reason, specific use-case guidance. Zero Tier-1 vocabulary. No emoji. Sentence-case heading.
-
----
+Similar length, specific runtime versions, specific protocols, specific providers, specific features named, specific non-feature named with a reason, specific use-case guidance. Zero Tier-1 vocabulary. No emoji. Sentence-case heading.
 
 ## 15. References and primary sources
 
@@ -924,7 +894,7 @@ Same word count, specific runtime versions, specific protocols, specific provide
 - Reinhart, A., Brown, D. W., Markey, B., Laudenbach, M., Pantusen, K., Yurko, R., and Weinberg, G. "Do LLMs write like humans? Variation in grammatical and rhetorical styles," *PNAS* 2025 (preprint arXiv:2410.16107v1). DOI 10.1073/pnas.2422455122. **Source of the Biber 66-feature analysis, HAP-E/CAP parallel corpora, the present-participial-clauses 2–5× finding, and the over-represented words table (camaraderie, tapestry, palpable, intricate, etc.).**
 - Juzek, T. S. and Ward, Z. B. "Why Does ChatGPT 'Delve' So Much? Exploring the Sources of Lexical Overrepresentation in Large Language Models," Proc. COLING 2025, pp. 6397–6411. **21 focal words; 3-step identification method; RLHF evidence via Llama 2-Base vs Llama 2-Chat entropy comparison.**
 - Juzek, T. S. and Ward, Z. B. "Word Overuse and Alignment in Large Language Models: The Influence of Learning from Human Feedback," arXiv:2508.01930. **Direct experimental confirmation that LHF (RLHF + DPO) installs lexical preferences in Llama; online study showing participants systematically prefer text with focal words.**
-- Kobak, D., González-Márquez, R., Horváth, E.-A., and Lause, J. "Delving into ChatGPT usage in academic writing through excess vocabulary," arXiv:2406.07016 / *Scientometrics* 2024. **14.2M PubMed abstracts 2010–2024; excess-words method; 329 excess words in Q1 2024; 10% LLM-usage lower bound; "delves" r=25.2, "crucial" δ=0.026.**
+- Kobak, D., González-Márquez, R., Horvát, E.-Á., and Lause, J. "Delving into LLM-assisted writing in biomedical publications through excess vocabulary," *Science Advances* 11(27), eadt3813, 2025, doi:10.1126/sciadv.adt3813. First preprint: "Delving into ChatGPT usage in academic writing through excess vocabulary," arXiv:2406.07016v1, 2024. **Preprint: 14.2M PubMed abstracts 2010 to early 2024; excess-words method; 329 excess words in Q1 2024; 10% LLM-usage lower bound; "delves" r=25.2, "crucial" δ=0.026. Published version: more than 15 million abstracts through 2024, a 13.5% lower bound, up to 40% in some sub-corpora.**
 - McGovern, H., Stureborg, R., Suhara, Y., and Alikaniotis, D. "Your Large Language Models Are Leaving Fingerprints," Proc. GenAIDetect 2025, ACL, aclanthology.org/2025.genaidetect-1.6. **POS-n-gram fingerprints; 0.94–0.98 F1 on GPT-4 / Cohere / human; fingerprints consistent within model family across domains.**
 - Freeburg, E. M. "The Last Fingerprint: How Markdown Training Shapes LLM Prose," arXiv:2603.27006, March 2026. **Em-dash mechanistic analysis; 12-model × 3-condition suppression gradient; Table 1 above.**
 - Zamaraeva, O., Flickinger, D., Bond, F., and Gómez-Rodríguez, C. "Comparing LLM-generated and human-authored news text using formal syntactic theory," Proc. ACL 2025 Long Papers, pp. 9041–9060.
@@ -947,12 +917,13 @@ Same word count, specific runtime versions, specific protocols, specific provide
 - *The Globe and Mail*, "What newsrooms are doing to stay ahead of AI," standards editor column, 4 April 2026.
 - Loffhagen, E. "The New York Times drops freelance journalist who used AI to write book review," *The Guardian*, 31 March 2026. **The Alex Preston incident.**
 - Landymore, F. "NYT Cuts Ties With Writer as Scrutiny of AI Content Grows," *Futurism*, 1 April 2026.
-- Altman, S. Threads post re: em-dash frequency adjustment in ChatGPT, 2024.
+- Altman, S. Post on X, 14 November 2025: "Small-but-happy win: If you tell ChatGPT not to use em-dashes in your custom instructions, it finally does what it's supposed to do!" Freeburg (2026) separately cites an Altman acknowledgement that the frequency was tuned.
+- "Physician awareness of, interest in, and current use of artificial intelligence large language model-based virtual assistants," *PLOS One*, 2025, doi:10.1371/journal.pone.0320749. **562 physicians at a New York health system surveyed November to December 2023; 21.0% already used LLM assistants in practice. Source of the §3 P1 example.**
 - Gnuse, A. "The AI writing tics that hurt engagement: A study," *Search Engine Land*, 25 February 2026. **"Conclusion" headers = strongest negative engagement signal; 1,000+ URL study.**
 
 ### Practitioner / community reference
 
-- **Wikipedia:Signs of AI writing (WP:AISIGNS)** — en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing. The most comprehensive community catalogue, with hundreds of annotated real examples from Wikipedia articles, drafts, and comments. Maintained by WikiProject AI Cleanup. **Required reading.**
+- **Wikipedia:Signs of AI writing (WP:AISIGNS)**: en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing. The most comprehensive community catalogue, with hundreds of annotated real examples from Wikipedia articles, drafts, and comments. Maintained by WikiProject AI Cleanup. **Required reading.**
 - Pangram Labs, "Comprehensive Guide to Spotting AI Writing Patterns," 2 April 2025. **The ~400-word vocabulary list used in §4.**
 - Pangram Labs, "Why Perplexity and Burstiness Fail to Detect AI," 4 March 2025.
 - jpeggdev/humanize-writing, github.com/jpeggdev/humanize-writing. Open-source Tier-1 / Tier-2 vocabulary reference and 15-item detection heuristic.
@@ -962,23 +933,14 @@ Same word count, specific runtime versions, specific protocols, specific provide
 - Brookings, "Detecting AI fingerprints: A guide to watermarking and beyond," 2024.
 - Berman, M. "Humanizer," OpenClaw kit v2.2.3, journeykits.ai/browse/kits/matt-clawd/humanizer, released 1 April 2026. **Source of §4.10 filler-phrase replacement table, §5.14 performed-authenticity patterns 1–4 (philosophical mic drops, performed balanced contrasts, brand-manifesto structure, parenthetical personality injection), and §6.9 false ranges. 28-pattern checklist derived from WP:AISIGNS.**
 
----
-
 ## 16. Meta: this guide against its own rules
 
-This guide was reviewed against its own checklist. Specifically:
+A guide that catalogues banned words has to print them. A raw linter count therefore mostly measures the catalogue. Run over the whole file on this revision, `tools/lint_writing_style.py` reports 326 hits, and nearly all of them sit where a banned word is the thing being discussed: the word tables, the quoted AI drafts, the §13 checklist, the headings and reference titles that name a pattern, and the word lists of §4.
 
-- **Vocabulary scan.** Zero occurrences in running prose of: delve, tapestry, intricate, realm, vibrant, testament, showcase, seamless, navigate (metaphorical), leverage (as verb), foster, crucial, pivotal, multifaceted, nuanced, comprehensive, robust, transformative, groundbreaking, revolutionary, camaraderie, palpable, fleeting, solace, grapple, amidst.
-- **Opener / closer scan.** Zero openers of "In today's…", "In recent years…", "In the realm of…", "It's important to note…". Zero closers of "In conclusion…", "Overall…", "Ultimately…", "The bottom line…".
-- **Negative parallelism.** One deliberate use in §5.1 as an illustrative example and one in §14.1's worked example. Zero elsewhere.
-- **Tricolon density.** Enumerations mixed: two-item, three-item, four-item, seven-item, thirteen-item lists. No paragraph contains two consecutive tricolons.
-- **Sentence-length variance.** Intentional short/long mix throughout; §6.5 closing paragraph opens with "Praise is earned by content." (4 words) then follows with a longer analytical sentence.
-- **Paragraph-length variance.** Paragraphs vary from one sentence (several in §3) to twelve sentences (§1.2).
-- **Opinions taken.** §5.1 calls negative parallelism "the single most recognisable AI structure." §12.4 asserts rewriting beats editing. §9.4 bans specific marketing words. §11 takes a position on which tells remain live versus which have decayed.
-- **Specifics.** arXiv IDs, DOIs, publication dates, page numbers, percentage figures, specific model names, specific ratio values (1,374.92×, 6%, 0.118, 68%, 2,700%, 329 excess words, etc.) throughout §1, §4, §5, §10, §15.
-- **Copulas.** "Is" used freely. "Serves as" / "stands as" / "represents" avoided except where literally functional.
-- **No markdown leakage.** No stray `---` dividers above headings. No emoji in headings. Sentence case throughout.
-- **First and second person** used appropriately in instructions: "you," "your," "we."
-- **Contractions** used where register permits: "isn't," "don't," "can't," "wasn't."
+The fairer test is the guide's own prose. That was measured by linting a copy with the tables, block quotes, headings, quoted phrases and bold labels taken out, along with §13, §15 and this section. The copy has no em dashes and no horizontal rules above headings. It also has no negative parallelism in the forms §5.1 lists, which was checked by reading as well, because the linter's pattern for it misses the em-dash and "not X, but Y" forms. What the linter still finds there is the banned vocabulary itself, listed in §4.9 and §9.1 and counted in §14.
 
-If the guide itself read as AI-written, it would not be credible. The test survives.
+Three thresholds are still missed. Contractions run at 3.7 per 1,000 words of the guide's own prose, under the linter's minimum of 8; §7.3 allows that for formal reference documentation. Seven of its 11 enumerations have exactly three items, against a 30% limit. Bold runs at 2.6 per 200 words across the whole file, almost all of it in the labels of reference lists.
+
+Seven em dashes remain, all inside quotations. Five are examples whose subject is the em dash or the pattern it forms (§2 item 6, §5.1, §5.10 rule 3, and the §14.1 AI draft with its tell count). The other two are a quotation from Freeburg in §5.10 and a source title in §15.
+
+Earlier revisions of this section said the guide passed its own checklist, while the file carried 100 em dashes, a horizontal rule above every section, four negative-parallelism constructions of the forms §5.1 lists (one of them in the §14.1 rewrite, which was presented as clean) and citations that didn't match their sources. This revision corrects them.
